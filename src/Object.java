@@ -3,25 +3,38 @@ public class Object {
 	
 	// This will always be a colour
 	private String id;
-	// Radius of the circle
-	private int topLeftBox;
-	private int bottomRightBox;
+	// Pixel co-ordinates of box
+	private int topLeft_X;
+	private int topLeft_Y;
+	private int bottomRight_X;
+	private int bottomRight_Y;
 
-	public Object(String id, int topLeftBox, int bottomRightBox) {
+	public Object(String id, int topLeftX, int topLeftY, int bottomRightX, int bottomRightY) {
 		this.id = id;
-		this.topLeftBox = topLeftBox;
-		this.bottomRightBox = bottomRightBox;
+		this.topLeft_X = topLeftX;
+		this.topLeft_Y = topLeftY;
+		this.bottomRight_X = bottomRightX;
+		this.bottomRight_Y = bottomRightY;
 	}
 	
 	public String getId() {
 		return id;
 	}
-	public int getTopLeftBox()
-	{
-		return topLeftBox;
+
+	public int getTopLeft_X() {
+		return topLeft_X;
 	}
-	public int getBottomRightBox()
-	{
-		return bottomRightBox;
+
+	public int getTopLeft_Y() {
+		return topLeft_Y;
 	}
+
+	public int getBottomRight_X() {
+		return bottomRight_X;
+	}
+
+	public int getBottomRight_Y() {
+		return bottomRight_Y;
+	}
+	
 }

@@ -6,6 +6,8 @@ public class Main {
 		
 		ImportCSV csv = new ImportCSV("res/input.csv");
 		System.out.println(csv.getData().entrySet());
+		
+		Camera c = new Camera("res/input.csv");
 	}
 
 }

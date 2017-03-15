@@ -18,7 +18,10 @@ public class ImportCSV {
 			while ((line = br.readLine()) != null) {
 				String[] object = line.split(split);
 				String objectId = object[0];
-				String objectData = object[1] + "," + object[2] + "," + object[3];
+				String objectData = object[1];
+				for (int i = 2; i < object.length; i++) {
+					objectData = objectData + "," + object[i];
+				}
 				objects.put(objectId, objectData);
 			}
 		} catch (Exception e) {
