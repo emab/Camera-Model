@@ -4,7 +4,7 @@ public class Main {
 		System.out.println("Hello world!");
 		
 		
-		ImportCSV csv = new ImportCSV("/Users/emab/Documents/Eclipse/Home/Camera Model/res/input.csv");
+		ImportCSV csv = new ImportCSV("res/input.csv");
 		System.out.println(csv.getData().entrySet());
 	}
 
