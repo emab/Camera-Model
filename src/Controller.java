@@ -42,26 +42,41 @@ public class Controller {
 			String[] realObjData = realObjects.get(id);
 			
 			double distanceFromCenterPx = calcCenterDistance(leftX, leftY, rightX, rightY);
+			System.out.println("Distance from centre in pixels: " + distanceFromCenterPx);
 			
-			System.out.println(distanceFromCenterPx);
 			double knownWidth = 2 * Integer.parseInt(realObjData[2]);
-			System.out.println(knownWidth);
-			System.out.println(obj.getWidthPx());
 			double distancePerPx = knownWidth / obj.getWidthPx();
-			System.out.println(distancePerPx);
-			double distanceFromCenter = distanceFromCenterPx * distancePerPx;
-			System.out.println(distanceFromCenter);
+			double distanceFromCenter = Math.abs(distanceFromCenterPx * distancePerPx);
+			
+			obj.setDistanceCenter(distanceFromCenter);
+			
+			System.out.println("Distance from centre in cm: " + distanceFromCenter);
+			
+			double xCenter = (leftX + rightX) / 2;
+			double yCenter = (leftY + rightY) / 2;
+			double xdistFraction = Math.abs((640 - xCenter)) / 640;
+			double Xangle = Math.toDegrees(Math.atan((      (100.0 * xdistFraction   ) / 130.32     )));
+			System.out.println("Angle on X axis: " + Xangle);
+			
+			double ydistFraction = Math.abs((400 - yCenter)) / 400;
+			System.out.println(ydistFraction);
+			double Yangle = Math.toDegrees(Math.atan(( (56.66 * ydistFraction) / 130.32    )));
+			System.out.println("Angle on Y axis: " + Yangle);
+			
+			double averageAngle = (Xangle + Yangle)/2;
+			System.out.println("Average angle to object: " + averageAngle);
+			
+			obj.setAngle(averageAngle);
 		}
 	}
 	
 	public static double calcCenterDistance(int leftX, int leftY, int rightX, int rightY) {
-		int camCenterX = 400;
-		int camCenterY = 640;
+		int camCenterX = 640;
+		int camCenterY = 400;
 		
 		int objCenterX = (leftX + rightX) / 2;
 		int objCenterY = (leftY + rightY) / 2;
 		
-		return Math.sqrt(Math.pow((objCenterX - camCenterX), 2) 
-				+ Math.pow((objCenterY - camCenterY), 2));
+		return Math.sqrt( Math.pow((camCenterX - objCenterX), 2) + Math.pow((objCenterY - camCenterY), 2) );
 	}
 }

@@ -22,6 +22,9 @@ public class Object {
 	// Distance to object from camera
 	private double distance;
 	
+	// Distance from object to center point
+	private double distanceCenter;
+	
 	// Angle from camera to center of object
 	private double angle;
 	
@@ -83,6 +86,14 @@ public class Object {
 
 	public int getWidthPx() {
 		return widthPx;
+	}
+
+	public double getDistanceCenter() {
+		return distanceCenter;
+	}
+
+	public void setDistanceCenter(double distanceCenter) {
+		this.distanceCenter = distanceCenter;
 	}
 	
 }
