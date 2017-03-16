@@ -1,7 +1,6 @@
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
 // This class will create Objects depending on what it reads in from a CSV file and its current location
