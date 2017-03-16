@@ -41,18 +41,25 @@ public class Controller {
 			
 			String[] realObjData = realObjects.get(id);
 			
+			System.out.println("Item id: "+key);
+			
 			double distanceFromCenterPx = calcCenterDistance(leftX, leftY, rightX, rightY);
 			System.out.println("Distance from centre in pixels: " + distanceFromCenterPx);
 			
-			double knownWidth = 2 * Integer.parseInt(realObjData[2]);
-			double distancePerPx = knownWidth / obj.getWidthPx();
+			double knownWidth = 2 * Double.parseDouble((realObjData[2]));
+			double distancePerPx = Math.abs(knownWidth / obj.getWidthPx());
+			
+			
+			
 			double distanceFromCenter = Math.abs(distanceFromCenterPx * distancePerPx);
 			
 			obj.setDistanceCenter(distanceFromCenter);
 			
 			System.out.println("Distance from centre in cm: " + distanceFromCenter);
 			
-			System.out.println(distanceToObject(8, 800, 300, 0.28, 0.635));
+			//System.out.println(distanceToObject(8, 800, 300, 0.28, 0.635));
+			
+			System.out.println("Calculated height: "+  calcHeight(distancePerPx)  );
 			
 			// This isn't the right way to work out the angles!
 //			double xCenter = (leftX + rightX) / 2;
@@ -68,8 +75,13 @@ public class Controller {
 //			
 //			double averageAngle = (Xangle + Yangle)/2;
 //			System.out.println("Average angle to object: " + averageAngle);
-			
+			System.out.println("________________________________________________");
 		}
+	}
+	
+	public static double calcHeight(double distancePerPx) {
+		double result = (640 * distancePerPx) / Math.tan(75/2);
+		return Math.abs(result);
 	}
 	
 	public static double calcCenterDistance(int leftX, int leftY, int rightX, int rightY) {
@@ -79,7 +91,9 @@ public class Controller {
 		int objCenterX = (leftX + rightX) / 2;
 		int objCenterY = (leftY + rightY) / 2;
 		
-		return Math.sqrt( Math.pow((camCenterX - objCenterX), 2) + Math.pow((objCenterY - camCenterY), 2) );
+		System.out.println(objCenterX + "  "+ objCenterY);
+		
+		return Math.sqrt( Math.pow((camCenterX - objCenterX), 2) + Math.pow((camCenterY - objCenterY), 2) );
 	}
 	
 	public static double distanceToObject(double realHeightCm, double imageHeightPx, double objectHeightPx,
