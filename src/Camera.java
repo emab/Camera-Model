@@ -7,10 +7,11 @@ import java.util.List;
 // This class will create Objects depending on what it reads in from a CSV file and its current location
 public class Camera {
 	
-	final private int SIZE_X = 1280;
-	final private int SIZE_Y = 800;
-	final private int FOV_X = 75;
-	final private int FOV_Y = 47;
+	// Focal length in cm
+	private final double focalLength = 0.28;
+	
+	// Sensor height in cm
+	private final double sensorHeight = 0.635;
 	
 	private HashMap<String,String[]> objects = new HashMap<String,String[]>();
 
@@ -32,4 +33,13 @@ public class Camera {
 	public HashMap<String,String[]> getObjects() {
 		return objects;
 	}
+
+	public double getFocalLength() {
+		return focalLength;
+	}
+
+	public double getSensorHeight() {
+		return sensorHeight;
+	}
+	
 }
