@@ -8,6 +8,24 @@ public class Object {
 	private int topLeft_Y;
 	private int bottomRight_X;
 	private int bottomRight_Y;
+	
+	// Object width pixels
+	private int widthPx;
+	
+	// Known object width
+	private int objWidth;
+	
+	// Known object co-ordinates
+	private int X;
+	private int Y;
+	
+	// Distance to object from camera
+	private double distance;
+	
+	// Angle from camera to center of object
+	private double angle;
+	
+	//
 
 	public Object(String id, int topLeftX, int topLeftY, int bottomRightX, int bottomRightY) {
 		this.id = id;
@@ -15,6 +33,8 @@ public class Object {
 		this.topLeft_Y = topLeftY;
 		this.bottomRight_X = bottomRightX;
 		this.bottomRight_Y = bottomRightY;
+		
+		widthPx = (topLeft_X - bottomRight_X);
 	}
 	
 	public String getId() {
@@ -35,6 +55,34 @@ public class Object {
 
 	public int getBottomRight_Y() {
 		return bottomRight_Y;
+	}
+
+	public int getObjWidth() {
+		return objWidth;
+	}
+
+	public void setObjWidth(int objWidth) {
+		this.objWidth = objWidth;
+	}
+
+	public double getDistance() {
+		return distance;
+	}
+
+	public void setDistance(double distance) {
+		this.distance = distance;
+	}
+
+	public double getAngle() {
+		return angle;
+	}
+
+	public void setAngle(double angle) {
+		this.angle = angle;
+	}
+
+	public int getWidthPx() {
+		return widthPx;
 	}
 	
 }
