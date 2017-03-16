@@ -20,7 +20,7 @@ public class ImportCSV {
 				String objectId = object[0];
 				String objectData = object[1];
 				for (int i = 2; i < object.length; i++) {
-					objectData = objectData + "," + object[i];
+					objectData = objectData + " " + object[i];
 				}
 				objects.put(objectId, objectData);
 			}
