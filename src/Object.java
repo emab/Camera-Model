@@ -28,8 +28,7 @@ public class Object {
 	// Angle from camera to center of object
 	private double angle;
 	
-	//
-
+	// Init object and calculate its width in px
 	public Object(String id, int topLeftX, int topLeftY, int bottomRightX, int bottomRightY) {
 		this.id = id;
 		this.topLeft_X = topLeftX;
@@ -40,6 +39,7 @@ public class Object {
 		widthPx = Math.abs(topLeft_X - bottomRight_X);
 	}
 	
+	// Getters and setters
 	public String getId() {
 		return id;
 	}

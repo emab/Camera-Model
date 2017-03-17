@@ -10,6 +10,7 @@ public class Camera {
 	// Sensor height in cm
 	private final double sensorHeight = 0.635;
 	
+	// Hashmap to store objects that the data that the camera sees. Contains the id and the coordinates
 	private HashMap<String,String[]> objects = new HashMap<String,String[]>();
 
 	private String fileDest;
@@ -19,6 +20,8 @@ public class Camera {
 
 		}
 	
+	// Uses the ImportCSV class to import data from CSV file. In the real model this would just be the
+	// inputstream of the camera converted into usable data
 	public void getData() {
 		ImportCSV csv = new ImportCSV(fileDest);
 		
@@ -27,6 +30,8 @@ public class Camera {
 			objects.put(key, coordinates);
 		}
 	}
+	
+	// getters
 	public HashMap<String,String[]> getObjects() {
 		return objects;
 	}

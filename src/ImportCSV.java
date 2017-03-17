@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 public class ImportCSV {
 	
+	// Store data from file
 	HashMap<String,String> objects = new HashMap<String,String>(); 
 	
+	// Vairbales needed to read file
     BufferedReader br = null;
     String line = "";
     String split = ",";
@@ -22,6 +24,7 @@ public class ImportCSV {
 				for (int i = 2; i < object.length; i++) {
 					objectData = objectData + "," + object[i];
 				}
+				// Store objects
 				objects.put(objectId, objectData);
 			}
 		} catch (Exception e) {
