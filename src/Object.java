@@ -16,8 +16,8 @@ public class Object {
 	private int objWidth;
 	
 	// Known object co-ordinates
-	private int X;
-	private int Y;
+	//private int X;
+	//private int Y;
 	
 	// Distance to object from camera
 	private double distance;
@@ -37,7 +37,7 @@ public class Object {
 		this.bottomRight_X = bottomRightX;
 		this.bottomRight_Y = bottomRightY;
 		
-		widthPx = (topLeft_X - bottomRight_X);
+		widthPx = Math.abs(topLeft_X - bottomRight_X);
 	}
 	
 	public String getId() {

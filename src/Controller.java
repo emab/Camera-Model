@@ -1,12 +1,6 @@
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class Controller {
-	
-	private int actualHeight;
-	private int calculatedHeight;
-	
 	
 	public static void main(String[] args) {
 		
@@ -24,10 +18,6 @@ public class Controller {
 		
 		// Camera gives data to controller
 		HashMap<String,String[]> cameraObjects = c.getObjects();
-		
-		String[][] objInfo = new String[cameraObjects.size()][3];
-		
-		int count = 0;
 		
 		// Iterate through the objects it has recognised and calculate some values about them
 		for (String key : cameraObjects.keySet()) {
@@ -47,7 +37,9 @@ public class Controller {
 			System.out.println("Distance from centre in pixels: " + distanceFromCenterPx);
 			
 			double knownWidth = 2 * Double.parseDouble((realObjData[2]));
+			System.out.println("Known object width (cm): "+knownWidth);
 			double distancePerPx = Math.abs(knownWidth / obj.getWidthPx());
+			System.out.println("Object width in px: "+obj.getWidthPx());
 			
 			
 			
@@ -58,8 +50,11 @@ public class Controller {
 			System.out.println("Distance from centre in cm: " + distanceFromCenter);
 			
 			//System.out.println(distanceToObject(8, 800, 300, 0.28, 0.635));
-			
-			System.out.println("Calculated height: "+  calcHeight(distancePerPx)  );
+			double height = calcHeight(distancePerPx);
+			double angle = calcAngle(distanceFromCenter, height);
+			System.out.println("Calculated height: "+  height  );
+			System.out.println("Calculated angle: "+ angle);
+			System.out.println("Calculated distance from camera: "+calcDistance(angle, distanceFromCenter));
 			
 			// This isn't the right way to work out the angles!
 //			double xCenter = (leftX + rightX) / 2;
@@ -77,6 +72,16 @@ public class Controller {
 //			System.out.println("Average angle to object: " + averageAngle);
 			System.out.println("________________________________________________");
 		}
+	}
+	
+	public static double calcDistance(double angle, double centreDistance) {
+		double distance = Math.abs(centreDistance / Math.sin(angle));
+		return distance;
+	}
+	
+	public static double calcAngle(double centreDistance, double height) {
+		double angle = Math.toDegrees(Math.atan(centreDistance/height));
+		return angle;
 	}
 	
 	public static double calcHeight(double distancePerPx) {
