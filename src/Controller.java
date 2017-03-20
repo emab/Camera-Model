@@ -73,7 +73,7 @@ public class Controller {
 	
 	// This method calculates the distance from the centre of the object to the camera 
 	public static double calcDistance(double angle, double centreDistance) {
-		double distance = Math.abs(centreDistance / Math.sin(angle));
+		double distance = centreDistance / Math.sin(Math.toRadians(angle));
 		return distance;
 	}
 	
@@ -85,7 +85,7 @@ public class Controller {
 	
 	// This method calculates the height of the camera relative to the object
 	public static double calcHeight(double distancePerPx) {
-		double result = (640 * distancePerPx) / Math.tan(75/2);
+		double result = (640 * distancePerPx) / Math.tan(Math.toRadians(75/2));
 		return Math.abs(result);
 	}
 	
