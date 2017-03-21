@@ -17,9 +17,10 @@ public class Controller {
 			realObjects.put(key, csv.getData().get(key).split(","));
 		}
 		
+
 		
 		// Camera gives us its raw data
-		Camera c = new Camera(0,0,20);
+		Camera c = new Camera(1,-1,20);
 		objects = c.getProcessedObjects();
 		
 		// Iterate through object data from camera
@@ -82,6 +83,8 @@ public class Controller {
 			
 		}*/
 	}
+	
+
 	
 	// This method calculates the distance from the centre of the object to the camera 
 	public static double calcDistance(double angle, double centreDistance) {
