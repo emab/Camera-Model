@@ -1,5 +1,7 @@
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 // This class will create Objects depending on what it reads in from a CSV file and its current location
 public class Camera {
@@ -12,6 +14,8 @@ public class Camera {
 	private double xFOV = 75;
 	private double yFOX = 47;
 	
+	private List<Object> processedObjects = new ArrayList<Object>();
+	
 	// Hashmap to store objects that the data that the camera sees. Contains the id and the coordinates
 	private HashMap<String,String[]> objects = new HashMap<String,String[]>();
 
@@ -21,11 +25,13 @@ public class Camera {
 			this.camX = camX;
 			this.camY = camY;
 			this.camZ = camZ;
+			
+			getData();
 		}
 	
 	// Uses the ImportCSV class to import data from CSV file. In the real model this would just be the
 	// inputstream of the camera converted into usable data
-	public void getData() {
+	private void getData() {
 		ImportCSV csv = new ImportCSV(fileDest);
 		
 		for (String key : csv.getData().keySet()) {
@@ -41,21 +47,27 @@ public class Camera {
 			
 			double objX = Double.parseDouble(objects.get(key)[0]);
 			double objY = Double.parseDouble(objects.get(key)[1]);
+			double objR = Double.parseDouble(objects.get(key)[2]);
 			
 			if (xMax > Math.abs(objX) && yMax > Math.abs(objY)) {
-				System.out.println("Can see object");
+				System.out.println("Can see object: " + key);
+				
+				double distance = Math.sqrt( Math.pow((camX - objX), 2) + Math.pow((camY - objY), 2) 
+				+ Math.pow((camZ), 2));
+				double objArc = 2 * Math.toDegrees((Math.atan( objR / distance )));
+				double pixelWidth = (objArc/75) * 320;
+				double xCentre = objX - camX;
+				double yCentre = objY - camY;
+
+				processedObjects.add(new Object(key, objX, objY, objR, distance, pixelWidth, xCentre, yCentre));
+				
 			} else {
-				System.out.println("Cannot see object");
+				System.out.println("Cannot see object: " + key);
 			}
 		}
-		
 	}
 	
 	// getters
-	public HashMap<String,String[]> getObjects() {
-		return objects;
-	}
-
 	public double getCamX() {
 		return camX;
 	}
@@ -68,4 +80,7 @@ public class Camera {
 		return camZ;
 	}
 	
+	public List<Object> getProcessedObjects() {
+		return processedObjects;
+	}
 }

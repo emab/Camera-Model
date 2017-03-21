@@ -3,17 +3,19 @@ public class Object {
 	
 	// This will always be a colour
 	private String id;
-	// Pixel co-ordinates of box
-	private int topLeft_X;
-	private int topLeft_Y;
-	private int bottomRight_X;
-	private int bottomRight_Y;
+	
+	// Camera co-ordinates of box
+	private double centerX;
+	private double centerY;
+	
+	// Real radius
+	private double radius;
 	
 	// Object width pixels
-	private int widthPx;
+	private double widthPx;
 	
 	// Known object width
-	private int objWidth;
+	private double objWidth;
 	
 	// Known object co-ordinates
 	private double X;
@@ -28,35 +30,22 @@ public class Object {
 	// Angle from camera to center of object
 	private double angle;
 	
+	
 	// Adds known object
-	public Object(double X, double Y) {
+	public Object(String id, double X, double Y, double radius, double distance, double pxWidth, double xCentre, double yCentre) {
+		this.id = id;
 		this.X = X;
 		this.Y = Y;
+		this.radius = radius;
+		this.distance = distance;
+		this.widthPx = pxWidth;
+		this.centerX = xCentre;
+		this.centerY = yCentre;
 	}
 	
 	// Getters and setters
 	public String getId() {
 		return id;
-	}
-
-	public int getTopLeft_X() {
-		return topLeft_X;
-	}
-
-	public int getTopLeft_Y() {
-		return topLeft_Y;
-	}
-
-	public int getBottomRight_X() {
-		return bottomRight_X;
-	}
-
-	public int getBottomRight_Y() {
-		return bottomRight_Y;
-	}
-
-	public int getObjWidth() {
-		return objWidth;
 	}
 
 	public void setObjWidth(int objWidth) {
@@ -77,10 +66,6 @@ public class Object {
 
 	public void setAngle(double angle) {
 		this.angle = angle;
-	}
-
-	public int getWidthPx() {
-		return widthPx;
 	}
 
 	public double getDistanceCenter() {
@@ -105,6 +90,26 @@ public class Object {
 
 	public void setY(int y) {
 		Y = y;
+	}
+
+	public double getCenterX() {
+		return centerX;
+	}
+
+	public double getCenterY() {
+		return centerY;
+	}
+
+	public double getRadius() {
+		return radius;
+	}
+
+	public double getWidthPx() {
+		return widthPx;
+	}
+
+	public double getObjWidth() {
+		return objWidth;
 	}
 	
 }

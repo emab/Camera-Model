@@ -1,11 +1,15 @@
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Controller {
 	
 	public static void main(String[] args) {
 		
+		List<Object> objects = new ArrayList<Object>();
+		
 		// Importing information about the objects that we know about
-		ImportCSV csv = new ImportCSV("res/environment.csv");
+		ImportCSV csv = new ImportCSV("res/objects.csv");
 		
 		// HashMap to store object Ids, their real coordinates and their radius
 		HashMap<String,String[]> realObjects = new HashMap<String,String[]>();
@@ -14,12 +18,18 @@ public class Controller {
 		}
 		
 		
-		// Camera gets its input after processing image
-		Camera c = new Camera(0,0,10);
-		c.getData();
+		// Camera gives us its raw data
+		Camera c = new Camera(0,0,20);
+		objects = c.getProcessedObjects();
+		
+		// Iterate through object data from camera
+		for (Object obj : objects) {
+			
+		}
+		
 		
 		// Camera gives data to controller
-		HashMap<String,String[]> cameraObjects = c.getObjects();
+		// HashMap<String,String[]> cameraObjects = c.getObjects();
 		
 		/*
 		// Iterate through the objects it has recognised 
