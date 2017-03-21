@@ -16,8 +16,8 @@ public class Object {
 	private int objWidth;
 	
 	// Known object co-ordinates
-	//private int X;
-	//private int Y;
+	private double X;
+	private double Y;
 	
 	// Distance to object from camera
 	private double distance;
@@ -28,15 +28,10 @@ public class Object {
 	// Angle from camera to center of object
 	private double angle;
 	
-	// Init object and calculate its width in px
-	public Object(String id, int topLeftX, int topLeftY, int bottomRightX, int bottomRightY) {
-		this.id = id;
-		this.topLeft_X = topLeftX;
-		this.topLeft_Y = topLeftY;
-		this.bottomRight_X = bottomRightX;
-		this.bottomRight_Y = bottomRightY;
-		
-		widthPx = Math.abs(topLeft_X - bottomRight_X);
+	// Adds known object
+	public Object(double X, double Y) {
+		this.X = X;
+		this.Y = Y;
 	}
 	
 	// Getters and setters
@@ -94,6 +89,22 @@ public class Object {
 
 	public void setDistanceCenter(double distanceCenter) {
 		this.distanceCenter = distanceCenter;
+	}
+
+	public double getX() {
+		return X;
+	}
+
+	public void setX(int x) {
+		X = x;
+	}
+
+	public double getY() {
+		return Y;
+	}
+
+	public void setY(int y) {
+		Y = y;
 	}
 	
 }

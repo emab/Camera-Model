@@ -15,12 +15,13 @@ public class Controller {
 		
 		
 		// Camera gets its input after processing image
-		Camera c = new Camera("res/input.csv");
+		Camera c = new Camera(0,0,10);
 		c.getData();
 		
 		// Camera gives data to controller
 		HashMap<String,String[]> cameraObjects = c.getObjects();
 		
+		/*
 		// Iterate through the objects it has recognised 
 		for (String key : cameraObjects.keySet()) {
 			String id = key;
@@ -30,7 +31,7 @@ public class Controller {
 			int rightY = Integer.parseInt(cameraObjects.get(key)[3]);
 			
 			// Create a new object with the given data
-			Object obj = new Object(id, leftX, leftY, rightX, rightY);
+			//Object obj = new Object(id, leftX, leftY, rightX, rightY);
 			
 			// Find the known data of the object stored with the same id
 			String[] realObjData = realObjects.get(id);
@@ -68,7 +69,8 @@ public class Controller {
 			// Calculate the distance from the camera
 			System.out.println("Calculated distance from camera: "+calcDistance(angle, distanceFromCenter));
 			System.out.println("________________________________________________");
-		}
+			
+		}*/
 	}
 	
 	// This method calculates the distance from the centre of the object to the camera 
