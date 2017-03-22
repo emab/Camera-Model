@@ -77,7 +77,13 @@ public class Camera {
 		double a[] = {2,5,0};
 		double b[] = {1,1,0};
 		double cd[] = {-3,-1,0};
-		double d[] = {20.904544960366874,20.09975124224178,20.396078054371138};
+		double d[] = {0,0,0};
+		int i=0;
+		
+		for (Object o : processedObjects) {
+			d[i] = o.getDistance();
+			i++;
+		}
 		
 		trilaterate2(a, b, cd, d);
 	}
@@ -149,11 +155,11 @@ public class Camera {
                     double y = (y1 + X * Xy + Y * Yy + Z * Zy);
                     double z = (z1 + X * Xz + Y * Yz + Z * Zz);
 
-                    x = (x1 + X * Xx + Y * Yx - Z * Zx);
-                    y = (y1 + X * Xy + Y * Yy - Z * Zy);
-                    z = (z1 + X * Xz + Y * Yz - Z * Zz);
+                    long ansX = Math.round((x1 + X * Xx + Y * Yx - Z * Zx));
+                    long ansY = Math.round((y1 + X * Xy + Y * Yy - Z * Zy));
+                    long ansZ = Math.round((z1 + X * Xz + Y * Yz - Z * Zz));
 
-                    System.out.println(x + " " + y + " " + z);
+                    System.out.println(ansX + " " + ansY + " " + ansZ);
                     
     }
 	

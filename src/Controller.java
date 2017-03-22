@@ -20,7 +20,7 @@ public class Controller {
 
 		
 		// Camera gives us its raw data
-		Camera c = new Camera(1,-1,20);
+		Camera c = new Camera(10,4,25);
 		objects = c.getProcessedObjects();
 		
 		// Iterate through object data from camera
