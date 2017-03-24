@@ -11,8 +11,17 @@ public class Camera {
 	private double camY;
 	private double camZ;
 	
-	private double xFOV = 75;
-	private double yFOX = 47;
+	// Angle in which the camera is pointing
+	@SuppressWarnings("unused")
+	private double camTheta;
+	
+	// Details about camera which affect some of the calculations
+	final private double xFOV = 75;
+	@SuppressWarnings("unused")
+	final private double yFOX = 47;
+	final private double xResolution = 320;
+	@SuppressWarnings("unused")
+	final private double yResolution = 200;
 	
 	private List<Object> processedObjects = new ArrayList<Object>();
 	
@@ -21,11 +30,11 @@ public class Camera {
 
 	private String fileDest = "res/objects.csv";
 	
-	public Camera(double camX, double camY, double camZ) {
+	public Camera(double camX, double camY, double camZ, double theta) {
 			this.camX = camX;
 			this.camY = camY;
 			this.camZ = camZ;
-			
+			this.camTheta = theta;
 			getData();
 		}
 	
@@ -55,12 +64,13 @@ public class Camera {
 
 				double distance = Math.sqrt( Math.pow((camX - objX), 2) + Math.pow((camY - objY), 2) 
 				+ Math.pow((camZ), 2));
-				double objArc = 2 * Math.toDegrees((Math.atan( objR / distance )));
-				double pixelWidth = (objArc/75) * 320;
+				double objArc = 2 * Math.toDegrees((Math.atan( objR / distance )));			
+				double pixelWidth = (objArc/xFOV) * xResolution;
 				double xCentre = objX - camX;
 				double yCentre = objY - camY;
 				
-				processedObjects.add(new Object(key, objX, objY, objR, distance, pixelWidth, xCentre, yCentre));
+				processedObjects.add(new Object(key, objX, objY, objR, distance, 
+						pixelWidth, xCentre, yCentre, objArc));
 				
 			} else {
 				System.out.println("Cannot see object: " + key);
