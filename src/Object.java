@@ -18,6 +18,10 @@ public class Object {
 	private double X;
 	private double Y;
 	
+	// adjusted coordinates
+	private double adjX;
+	private double adjY;
+	
 	// Distance to object from camera
 	private double distance;
 	
@@ -29,16 +33,19 @@ public class Object {
 	
 	
 	// Adds known object
-	public Object(String id, double X, double Y, double radius, double distance, double pxWidth, double xCentre, double yCentre, double arc) {
+	public Object(String id, double adjX, double adjY, double radius, double distance, double pxWidth, 
+			double xCentre, double yCentre, double arc, double X, double Y) {
 		this.id = id;
-		this.X = X;
-		this.Y = Y;
+		this.adjX = adjX;
+		this.adjY = adjY;
 		this.radius = radius;
 		this.distance = distance;
 		this.widthPx = pxWidth;
 		this.centerX = xCentre;
 		this.centerY = yCentre;
 		this.arc = arc;
+		this.X = X;
+		this.Y = Y;
 	}
 	
 	// Getters and setters
@@ -58,6 +65,13 @@ public class Object {
 		return distanceCenter;
 	}
 
+	public double getAdjX() {
+		return adjX;
+	}
+
+	public double getAdjY() {
+		return adjY;
+	}
 
 	public double getX() {
 		return X;

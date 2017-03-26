@@ -9,7 +9,7 @@ public class Controller {
 		
 		// Camera gives us its raw data
 
-		Camera c = new Camera(33,73,13,0);
+		Camera c = new Camera(1,1,25,90);
 
 		objects = c.getProcessedObjects();
 		
@@ -27,18 +27,19 @@ public class Controller {
 				len[count] = getDistance(o.getRadius(), o.getWidthPx());
 				
 				if (count == 0) {
-					p1[0] = o.getX();
-					p1[1] = o.getY();
+					p1[0] = o.getAdjX();
+					p1[1] = o.getAdjY();
 					p1[2] = 0;
+					calcAngle(o, c);
 				}
 				if (count == 1) {
-					p2[0] = o.getX();
-					p2[1] = o.getY();
+					p2[0] = o.getAdjX();
+					p2[1] = o.getAdjY();
 					p2[2] = 0;
 				}
 				if (count == 2) {
-					p3[0] = o.getX();
-					p3[1] = o.getY();
+					p3[0] = o.getAdjX();
+					p3[1] = o.getAdjY();
 					p3[2] = 0;
 				}
 			}
@@ -124,5 +125,46 @@ public class Controller {
 	public static double getDistance(double objR, double pixelWidth) {
 		double dist = objR / Math.tan(Math.toRadians((75*pixelWidth)/320)/2);
 		return dist;
+	}
+	
+	public static void calcAngle(Object o, Camera c) {
+		// calculate known angle to an object if facing north
+		
+//		System.out.println(o.getX());
+//		System.out.println(o.getY());
+//		System.out.println(o.getAdjX());
+//		System.out.println(o.getAdjY());
+		
+		//double angle = Math.toDegrees(Math.atan2(o.getX(), o.getY()));
+		
+		
+		
+		//System.out.println(angle(o.getX(), o.getY()));
+		// calculate observed angle
+		//double observedAngle = Math.toDegrees(Math.atan((o.getAdjX() / o.getAdjY())));
+		//System.out.println(angle(o.getAdjX(), o.getAdjY()));
+		
+		System.out.println("North calculated rotation: "+angle(o.getX(), o.getY()));
+		System.out.println("Recalculated rotation: "+angle(o.getAdjX(), o.getAdjY()));
+		
+		double calcRotation = angle(o.getX(), o.getY()) - angle(o.getAdjX(), o.getAdjY());
+		System.out.println("Calculated rotation: "+Math.abs(calcRotation)%360);
+	}
+	
+	public static double angle(double x, double y) {
+		if (x > 0 && y > 0) {
+			return 360 - Math.toDegrees(Math.atan(x/y));
+		}
+		if (x > 0 && y < 0) {
+			return 180 - Math.toDegrees(Math.atan(x/y));
+		}
+		if (x < 0 && y > 0) {
+			return Math.abs(Math.toDegrees(Math.atan(x/y)));
+		}
+		if (x < 0 && y < 0) {
+			return 180 - Math.toDegrees(Math.atan(x/y));
+		}
+		System.out.println("here");
+		return 0;
 	}
 }
