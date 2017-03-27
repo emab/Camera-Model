@@ -63,6 +63,7 @@ public class Camera {
 			if ((camX > 0 && camY > 0) || (camX > 0 && camY < 0) || (camX > 0 && camY == 0) || (camX == 0 && camY > 0)) {
 				adjX = objX - camX;
 				adjY = objY - camY;
+				System.out.println("here");
 			} else if ((camX < 0 && camY < 0) || (camX == 0 && camY < 0)){
 				System.out.println("here");
 				adjX = objX - camX;

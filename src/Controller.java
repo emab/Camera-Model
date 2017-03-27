@@ -9,7 +9,7 @@ public class Controller {
 		
 		// Camera gives us its raw data
 
-		Camera c = new Camera(1,1,25,90);
+		Camera c = new Camera(1,1,25,0);
 
 		objects = c.getProcessedObjects();
 		
@@ -36,11 +36,13 @@ public class Controller {
 					p2[0] = o.getAdjX();
 					p2[1] = o.getAdjY();
 					p2[2] = 0;
+					calcAngle(o, c);
 				}
 				if (count == 2) {
 					p3[0] = o.getAdjX();
 					p3[1] = o.getAdjY();
 					p3[2] = 0;
+					calcAngle(o, c);
 				}
 			}
 			count++;
@@ -144,11 +146,13 @@ public class Controller {
 		//double observedAngle = Math.toDegrees(Math.atan((o.getAdjX() / o.getAdjY())));
 		//System.out.println(angle(o.getAdjX(), o.getAdjY()));
 		
+		System.out.println("Object ID: "+o.getId());
 		System.out.println("North calculated rotation: "+angle(o.getX(), o.getY()));
 		System.out.println("Recalculated rotation: "+angle(o.getAdjX(), o.getAdjY()));
 		
-		double calcRotation = angle(o.getX(), o.getY()) - angle(o.getAdjX(), o.getAdjY());
-		System.out.println("Calculated rotation: "+Math.abs(calcRotation)%360);
+		double calcRotation = 360 - angle(o.getX(), o.getY()) + angle(o.getAdjX(), o.getAdjY());
+		System.out.println("Calculated rotation: "+calcRotation);
+		System.out.println("_____________________________________________________________");
 	}
 	
 	public static double angle(double x, double y) {
@@ -164,7 +168,20 @@ public class Controller {
 		if (x < 0 && y < 0) {
 			return 180 - Math.toDegrees(Math.atan(x/y));
 		}
-		System.out.println("here");
-		return 0;
+		if (x == 0 && y > 0) {
+			return 0;
+		}
+		if (x == 0 && y < 0) {
+			return 180;
+		}
+		if (y == 0 && x > 0) {
+			return 270;
+		}
+		if (y == 0 && x < 0) {
+			return 90;
+		}
+		else {
+			return 0;
+		}
 	}
 }
