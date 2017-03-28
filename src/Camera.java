@@ -56,46 +56,44 @@ public class Camera {
 			double objY = Double.parseDouble(objects.get(key)[1]);
 			double objR = Double.parseDouble(objects.get(key)[2]);
 			
-			// adjusted coordinates
-			double adjX = 0;
-			double adjY = 0;
-			
-			if ((camX > 0 && camY > 0) || (camX > 0 && camY < 0) || (camX > 0 && camY == 0) || (camX == 0 && camY > 0)) {
-				adjX = objX - camX;
-				adjY = objY - camY;
-				System.out.println("here");
-			} else if ((camX < 0 && camY < 0) || (camX == 0 && camY < 0)){
-				System.out.println("here");
-				adjX = objX - camX;
-				adjY = objY + camY;
-			} else if (camX == 0 && camY == 0) {
-				adjX = objX;
-				adjY = objY;
-			}
+//			// adjusted coordinates
+//			double adjX = 0;
+//			double adjY = 0;
+//			
+//			if ((camX > 0 && camY > 0) || (camX > 0 && camY < 0) || (camX > 0 && camY == 0) || (camX == 0 && camY > 0)) {
+//				adjX = objX - camX;
+//				adjY = objY - camY;
+//				System.out.println("here");
+//			} else if ((camX < 0 && camY < 0) || (camX == 0 && camY < 0)){
+//				System.out.println("here");
+//				adjX = objX - camX;
+//				adjY = objY + camY;
+//			} else if (camX == 0 && camY == 0) {
+//				adjX = objX;
+//				adjY = objY;
+//			}
 			System.out.println("Original X: "+objX);
 			System.out.println("Original Y: "+objY);
-			System.out.println("Translated X: "+adjX);
-			System.out.println("Translated Y: "+adjY);
 			
-			double rotatedAdjX = adjX * Math.cos(Math.toRadians(camTheta)) - adjY * Math.sin(Math.toRadians(camTheta));
-			double rotatedAdjY = adjY * Math.cos(Math.toRadians(camTheta)) + adjX * Math.sin(Math.toRadians(camTheta));
+			double adjX = objX * Math.cos(Math.toRadians(camTheta)) - objY * Math.sin(Math.toRadians(camTheta));
+			double adjY = objY * Math.cos(Math.toRadians(camTheta)) + objX * Math.sin(Math.toRadians(camTheta));
 			
 
-			System.out.println("Rotated and translated X: "+rotatedAdjX);
-			System.out.println("Rotated and translated Y: "+rotatedAdjY);
+			System.out.println("Rotated and translated X: "+adjX);
+			System.out.println("Rotated and translated Y: "+adjY);
 			
-			if (xMax > Math.abs(rotatedAdjX) && yMax > Math.abs(rotatedAdjY)) {
+			if (xMax > Math.abs(adjX) && yMax > Math.abs(adjY)) {
 				System.out.println("Can see object: " + key);
 				
 
-				double distance = Math.sqrt( Math.pow((camX - rotatedAdjX), 2) + Math.pow((camY - rotatedAdjY), 2) 
+				double distance = Math.sqrt( Math.pow((camX - adjX), 2) + Math.pow((camY - adjY), 2) 
 				+ Math.pow((camZ), 2));
 				double objArc = 2 * Math.toDegrees((Math.atan( objR / distance )));			
 				double pixelWidth = (objArc/xFOV) * xResolution;
-				double xCentre = objX - camX;
-				double yCentre = objY - camY;
+				double xCentre = adjX - camX;
+				double yCentre = adjX - camY;
 				
-				processedObjects.add(new Object(key, rotatedAdjX, rotatedAdjY, objR, distance, 
+				processedObjects.add(new Object(key, adjX, adjX, objR, distance, 
 						pixelWidth, xCentre, yCentre, objArc, objX, objY));
 				
 			} else {

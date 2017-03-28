@@ -148,7 +148,7 @@ public class Controller {
 		
 		System.out.println("Object ID: "+o.getId());
 		System.out.println("North calculated rotation: "+angle(o.getX(), o.getY()));
-		System.out.println("Recalculated rotation: "+angle(o.getAdjX(), o.getAdjY()));
+		System.out.println("Recalculated rotation: "+angle(o.getCenterX(), o.getCenterY()));
 		
 		double calcRotation = 360 - angle(o.getX(), o.getY()) + angle(o.getAdjX(), o.getAdjY());
 		System.out.println("Calculated rotation: "+calcRotation);
