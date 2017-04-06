@@ -18,7 +18,6 @@ public class Camera {
 	final private double xFOV = 75;
 	final private double yFOV = 47;
 	final private double xResolution = 320;
-	@SuppressWarnings("unused")
 	final private double yResolution = 200;
 	
 	private List<Object> processedObjects = new ArrayList<Object>();
@@ -50,39 +49,50 @@ public class Camera {
 		double xMax = camZ * Math.tan(Math.toRadians(xFOV/2));
 		double yMax = camZ * Math.tan(Math.toRadians(yFOV/2));
 		
+		double pixelOriginX = camX - xMax/2;
+		double pixelOriginY = camY - yMax/2;
+		
+		System.out.println("pixelOriginX: "+pixelOriginX);
+		System.out.println("pixelOriginY: "+pixelOriginY);
+		
+		double avgPixelVal = ((xResolution/xMax)+(yResolution/yMax))/2;
+		System.out.println("Avg pixel value: "+avgPixelVal);
+		
 		for (String key : objects.keySet()) {
 			
 			double objX = Double.parseDouble(objects.get(key)[0]);
 			double objY = Double.parseDouble(objects.get(key)[1]);
 			double objR = Double.parseDouble(objects.get(key)[2]);
 			
-//			// adjusted coordinates
-//			double adjX = 0;
-//			double adjY = 0;
-//			
-//			if ((camX > 0 && camY > 0) || (camX > 0 && camY < 0) || (camX > 0 && camY == 0) || (camX == 0 && camY > 0)) {
-//				adjX = objX - camX;
-//				adjY = objY - camY;
-//				System.out.println("here");
-//			} else if ((camX < 0 && camY < 0) || (camX == 0 && camY < 0)){
-//				System.out.println("here");
-//				adjX = objX - camX;
-//				adjY = objY + camY;
-//			} else if (camX == 0 && camY == 0) {
-//				adjX = objX;
-//				adjY = objY;
-//			}
+			double adjX=0;
+			double adjY=0;
+			
+			if ((camX > 0 && camY > 0) || (camX > 0 && camY < 0) || (camX > 0 && camY == 0) || (camX == 0 && camY > 0)) {
+				adjX = objX - camX;
+				adjY = objY - camY;
+				System.out.println("here");
+			} else if ((camX < 0 && camY < 0) || (camX == 0 && camY < 0)){
+				System.out.println("here");
+				adjX = objX - camX;
+				adjY = objY + camY;
+			} else if (camX == 0 && camY == 0) {
+				adjX = objX;
+				adjY = objY;
+			}
+			
 			System.out.println("Original X: "+objX);
 			System.out.println("Original Y: "+objY);
 			
-			double adjX = objX * Math.cos(Math.toRadians(camTheta)) - objY * Math.sin(Math.toRadians(camTheta));
-			double adjY = objY * Math.cos(Math.toRadians(camTheta)) + objX * Math.sin(Math.toRadians(camTheta));
+			double rotatedAdjX = adjX * Math.cos(Math.toRadians(camTheta)) - adjY * Math.sin(Math.toRadians(camTheta));
+			double rotatedAdjY = adjY * Math.cos(Math.toRadians(camTheta)) + adjX * Math.sin(Math.toRadians(camTheta));
 			
 
-			System.out.println("Rotated and translated X: "+adjX);
-			System.out.println("Rotated and translated Y: "+adjY);
+			System.out.println("Rotated and translated X: "+rotatedAdjX);
+			System.out.println("Rotated and translated Y: "+rotatedAdjY);
 			
-			if (xMax > Math.abs(adjX) && yMax > Math.abs(adjY)) {
+			System.out.println("y maximum: "+yMax);
+			
+			if (xMax > Math.abs(rotatedAdjX) && yMax > Math.abs(rotatedAdjY)) {
 				System.out.println("Can see object: " + key);
 				
 
@@ -90,10 +100,16 @@ public class Camera {
 				+ Math.pow((camZ), 2));
 				double objArc = 2 * Math.toDegrees((Math.atan( objR / distance )));			
 				double pixelWidth = (objArc/xFOV) * xResolution;
-				double xCentre = adjX - camX;
-				double yCentre = adjX - camY;
+//				long xCentreNonRotated = Math.round((rotatedAdjX - pixelOriginX) * avgPixelVal);
+//				long yCentreNonRotated = Math.round((rotatedAdjY - pixelOriginY) * avgPixelVal);
+				double xCentreNonRotated = ((rotatedAdjX - pixelOriginX));
+				double yCentreNonRotated = ((rotatedAdjY - pixelOriginY));
+				long xCentre = Math.round(xCentreNonRotated * Math.cos(Math.toRadians(camTheta)) - yCentreNonRotated * Math.sin(Math.toRadians(camTheta)));
+				long yCentre = Math.round(yCentreNonRotated * Math.cos(Math.toRadians(camTheta)) - xCentreNonRotated * Math.sin(Math.toRadians(camTheta)));
+				System.out.println("xpixel: "+xCentre);
+				System.out.println("ypixel: "+yCentre);
 				
-				processedObjects.add(new Object(key, adjX, adjX, objR, distance, 
+				processedObjects.add(new Object(key, rotatedAdjX, rotatedAdjY, objR, distance, 
 						pixelWidth, xCentre, yCentre, objArc, objX, objY));
 				
 			} else {

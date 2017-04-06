@@ -9,7 +9,7 @@ public class Controller {
 		
 		// Camera gives us its raw data
 
-		Camera c = new Camera(1,1,25,0);
+		Camera c = new Camera(0,0,20,0);
 
 		objects = c.getProcessedObjects();
 		
@@ -30,19 +30,36 @@ public class Controller {
 					p1[0] = o.getAdjX();
 					p1[1] = o.getAdjY();
 					p1[2] = 0;
-					calcAngle(o, c);
+					
 				}
 				if (count == 1) {
 					p2[0] = o.getAdjX();
 					p2[1] = o.getAdjY();
 					p2[2] = 0;
-					calcAngle(o, c);
+					
 				}
 				if (count == 2) {
 					p3[0] = o.getAdjX();
 					p3[1] = o.getAdjY();
 					p3[2] = 0;
-					calcAngle(o, c);
+				
+//				if (count == 0) {
+//				p1[0] = o.getCenterX();
+//				p1[1] = o.getCenterY();
+//				p1[2] = 0;
+//				
+//			}
+//			if (count == 1) {
+//				p2[0] = o.getCenterX();
+//				p2[1] = o.getCenterY();
+//				p2[2] = 0;
+//				
+//			}
+//			if (count == 2) {
+//				p3[0] = o.getCenterX();
+//				p3[1] = o.getCenterY();
+//				p3[2] = 0;
+
 				}
 			}
 			count++;
@@ -79,14 +96,14 @@ public class Controller {
 
         double X = (L1*L1  - L2*L2  + LB1*LB1)/(2*LB1 );
         double C1 = Math.sqrt (L1*L1 - X*X);
-        if (L1*L1 - X*X < 0){System.out.println("no solution");}
+        if (L1*L1 - X*X < 0){System.out.println("no solution1");}
         double XB = (LB3*LB3 - LB2*LB2 + LB1*LB1 )/(2*LB1 );
-        if (LB3*LB3 - XB* XB < 0 ){System.out.println("no solution");}
+        if (LB3*LB3 - XB* XB < 0 ){System.out.println("no solution2");}
         double CB=  Math.sqrt(LB3*LB3 - XB* XB );
-        if (C1*C1+(XB - X)*(XB - X)< 0){System.out.println("no solution");}
+        if (C1*C1+(XB - X)*(XB - X)< 0){System.out.println("no solution3");}
         double D1 = Math.sqrt(C1*C1+(XB - X)*(XB - X));
         double Y = (D1*D1 - L3*L3  + CB*CB  )/(2*CB );
-        if (C1*C1 - Y*Y < 0){System.out.println("no solution");}
+        if (C1*C1 - Y*Y < 0){System.out.println("no solution4");}
         double Z = Math.sqrt(C1 * C1 - Y * Y);
 
        	//Now transform X,Y,Z to x,y,z
@@ -129,30 +146,8 @@ public class Controller {
 		return dist;
 	}
 	
-	public static void calcAngle(Object o, Camera c) {
-		// calculate known angle to an object if facing north
+	public static void calcAngle(Object o1, Object o2, Camera c) {
 		
-//		System.out.println(o.getX());
-//		System.out.println(o.getY());
-//		System.out.println(o.getAdjX());
-//		System.out.println(o.getAdjY());
-		
-		//double angle = Math.toDegrees(Math.atan2(o.getX(), o.getY()));
-		
-		
-		
-		//System.out.println(angle(o.getX(), o.getY()));
-		// calculate observed angle
-		//double observedAngle = Math.toDegrees(Math.atan((o.getAdjX() / o.getAdjY())));
-		//System.out.println(angle(o.getAdjX(), o.getAdjY()));
-		
-		System.out.println("Object ID: "+o.getId());
-		System.out.println("North calculated rotation: "+angle(o.getX(), o.getY()));
-		System.out.println("Recalculated rotation: "+angle(o.getCenterX(), o.getCenterY()));
-		
-		double calcRotation = 360 - angle(o.getX(), o.getY()) + angle(o.getAdjX(), o.getAdjY());
-		System.out.println("Calculated rotation: "+calcRotation);
-		System.out.println("_____________________________________________________________");
 	}
 	
 	public static double angle(double x, double y) {
