@@ -49,14 +49,16 @@ public class Camera {
 		double xMax = camZ * Math.tan(Math.toRadians(xFOV/2));
 		double yMax = camZ * Math.tan(Math.toRadians(yFOV/2));
 		
-		double pixelOriginX = camX - xMax/2;
-		double pixelOriginY = camY - yMax/2;
+		double pixelOriginX = camX - xMax;
+		double pixelOriginY = camY - yMax;
 		
 		System.out.println("pixelOriginX: "+pixelOriginX);
 		System.out.println("pixelOriginY: "+pixelOriginY);
 		
-		double avgPixelVal = ((xResolution/xMax)+(yResolution/yMax))/2;
-		System.out.println("Avg pixel value: "+avgPixelVal);
+		double avgXPixelVal = xResolution/(2*xMax);
+		double avgYPixelVal = yResolution/(2*yMax);
+		System.out.println("Avg x pixel value: "+avgXPixelVal);
+		System.out.println("Avg y pixel value: "+avgYPixelVal);
 		
 		for (String key : objects.keySet()) {
 			
@@ -91,6 +93,7 @@ public class Camera {
 			System.out.println("Rotated and translated Y: "+rotatedAdjY);
 			
 			System.out.println("y maximum: "+yMax);
+			System.out.println("x maximum: "+xMax);
 			
 			if (xMax > Math.abs(rotatedAdjX) && yMax > Math.abs(rotatedAdjY)) {
 				System.out.println("Can see object: " + key);
@@ -100,10 +103,10 @@ public class Camera {
 				+ Math.pow((camZ), 2));
 				double objArc = 2 * Math.toDegrees((Math.atan( objR / distance )));			
 				double pixelWidth = (objArc/xFOV) * xResolution;
-//				long xCentreNonRotated = Math.round((rotatedAdjX - pixelOriginX) * avgPixelVal);
-//				long yCentreNonRotated = Math.round((rotatedAdjY - pixelOriginY) * avgPixelVal);
-				double xCentreNonRotated = ((rotatedAdjX - pixelOriginX));
-				double yCentreNonRotated = ((rotatedAdjY - pixelOriginY));
+				
+				long xCentreNonRotated = Math.round((rotatedAdjX - pixelOriginX) * avgXPixelVal);
+				long yCentreNonRotated = Math.round((rotatedAdjY - pixelOriginY) * avgYPixelVal);
+				
 				long xCentre = Math.round(xCentreNonRotated * Math.cos(Math.toRadians(camTheta)) - yCentreNonRotated * Math.sin(Math.toRadians(camTheta)));
 				long yCentre = Math.round(yCentreNonRotated * Math.cos(Math.toRadians(camTheta)) - xCentreNonRotated * Math.sin(Math.toRadians(camTheta)));
 				System.out.println("xpixel: "+xCentre);

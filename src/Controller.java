@@ -9,7 +9,7 @@ public class Controller {
 		
 		// Camera gives us its raw data
 
-		Camera c = new Camera(0,0,20,0);
+		Camera c = new Camera(0,0,50,0);
 
 		objects = c.getProcessedObjects();
 		
@@ -27,38 +27,21 @@ public class Controller {
 				len[count] = getDistance(o.getRadius(), o.getWidthPx());
 				
 				if (count == 0) {
-					p1[0] = o.getAdjX();
-					p1[1] = o.getAdjY();
+					p1[0] = o.getX();
+					p1[1] = o.getY();
 					p1[2] = 0;
 					
 				}
 				if (count == 1) {
-					p2[0] = o.getAdjX();
-					p2[1] = o.getAdjY();
+					p2[0] = o.getX();
+					p2[1] = o.getY();
 					p2[2] = 0;
 					
 				}
 				if (count == 2) {
-					p3[0] = o.getAdjX();
-					p3[1] = o.getAdjY();
+					p3[0] = o.getX();
+					p3[1] = o.getY();
 					p3[2] = 0;
-				
-//				if (count == 0) {
-//				p1[0] = o.getCenterX();
-//				p1[1] = o.getCenterY();
-//				p1[2] = 0;
-//				
-//			}
-//			if (count == 1) {
-//				p2[0] = o.getCenterX();
-//				p2[1] = o.getCenterY();
-//				p2[2] = 0;
-//				
-//			}
-//			if (count == 2) {
-//				p3[0] = o.getCenterX();
-//				p3[1] = o.getCenterY();
-//				p3[2] = 0;
 
 				}
 			}
