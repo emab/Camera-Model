@@ -17,8 +17,8 @@ public class Camera {
 	// Details about camera which affect some of the calculations
 	final private double xFOV = 75;
 	final private double yFOV = 47;
-	final private double xResolution = 320;
-	final private double yResolution = 200;
+	final private long xResolution = 320;
+	final private long yResolution = 200;
 	
 	private List<Object> processedObjects = new ArrayList<Object>();
 	
@@ -135,6 +135,22 @@ public class Camera {
 		return camZ;
 	}
 	
+	public double getxFOV() {
+		return xFOV;
+	}
+
+	public double getyFOV() {
+		return yFOV;
+	}
+
+	public long getxResolution() {
+		return xResolution;
+	}
+
+	public long getyResolution() {
+		return yResolution;
+	}
+
 	public List<Object> getProcessedObjects() {
 		return processedObjects;
 	}

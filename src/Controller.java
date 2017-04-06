@@ -9,7 +9,7 @@ public class Controller {
 		
 		// Camera gives us its raw data
 
-		Camera c = new Camera(0,0,50,0);
+		Camera c = new Camera(0,0,300,5);
 
 		objects = c.getProcessedObjects();
 		
@@ -48,12 +48,14 @@ public class Controller {
 			count++;
 		}
 		
-		trilaterate(p1,p2,p3,len);
+		long[] coords = trilaterate(p1,p2,p3,len);
+		
+		calcAngle(objects.get(0), objects.get(1), c, coords);
 		
 	}
 	
 	// Inspiration from https://www.experts-exchange.com/questions/21253179/triangulation.html
-	public static void trilaterate(double[] P1, double[] P2, double[] P3, double[] L)
+	public static long[] trilaterate(double[] P1, double[] P2, double[] P3, double[] L)
     {
 		//define station points and distances
         double x1 = P1[0];
@@ -120,8 +122,12 @@ public class Controller {
         long ansX = Math.round(x);
         long ansY = Math.round(y);
         long ansZ = Math.abs(Math.round(z));
+        
+        long[] coords = {ansX,ansY,ansZ};
 
         System.out.println(ansX + " " + ansY + " " + ansZ);
+        
+        return coords;
     }
 		
 	public static double getDistance(double objR, double pixelWidth) {
@@ -129,8 +135,41 @@ public class Controller {
 		return dist;
 	}
 	
-	public static void calcAngle(Object o1, Object o2, Camera c) {
+	public static void calcAngle(Object o1, Object o2, Camera c, long[] coords) {
+		long resX = c.getxResolution();
+		long resY = c.getyResolution();
+		double xFOV = c.getxFOV();
+		double yFOV = c.getyFOV();
+		double xCam = coords[0];
+		double yCam = coords[1];
+		double zCam = coords[2];
 		
+		double xMax = zCam * Math.tan(Math.toRadians(xFOV/2));
+		double yMax = zCam * Math.tan(Math.toRadians(yFOV/2));
+		
+		double pixelOriginX = xCam - xMax;
+		double pixelOriginY = yCam - yMax;
+		
+		double avgXPixelVal = resX/(2*xMax);
+		double avgYPixelVal = resY/(2*yMax);
+		
+		long obj1x = Math.round((o1.getX() - pixelOriginX) * avgXPixelVal);
+		long obj1y = Math.round((o1.getY() - pixelOriginY) * avgYPixelVal);
+		
+		System.out.println(o1.getId());
+		System.out.println(o1.getCenterX());
+		System.out.println(obj1x);
+		
+		long obj2x = Math.round((o2.getX() - pixelOriginX) * avgXPixelVal);
+		long obj2y = Math.round((o2.getY() - pixelOriginY) * avgYPixelVal);
+		
+		double angle1 = Math.toDegrees(Math.atan((obj1y - obj2y)/(obj1x - obj2x)));
+		double angle2 = Math.toDegrees(Math.atan((o1.getCenterY() - o2.getCenterY())/(o1.getCenterX() - o2.getCenterX())));
+		
+		double diff = Math.abs(angle1) - Math.abs(angle2);
+		System.out.println("Calc angle1: "+angle1);
+		System.out.println("Calc angle2: "+angle2);
+		System.out.println("Calc angle3: "+diff);
 	}
 	
 	public static double angle(double x, double y) {
