@@ -9,7 +9,7 @@ public class Controller {
 		
 		// Camera gives us its raw data
 
-		Camera c = new Camera(0,0,300,5);
+		Camera c = new Camera(0,0,25,0);
 
 		objects = c.getProcessedObjects();
 		
