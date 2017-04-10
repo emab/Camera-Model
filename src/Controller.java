@@ -9,7 +9,7 @@ public class Controller {
 		
 		// Camera gives us its raw data
 
-		Camera c = new Camera(0,0,25,0);
+		Camera c = new Camera(0,0,15,200);
 
 		objects = c.getProcessedObjects();
 		
@@ -24,7 +24,7 @@ public class Controller {
 
 		for (Object o : objects) {
 			if (count < 3) {
-				len[count] = getDistance(o.getRadius(), o.getWidthPx());
+				len[count] = getDistance(o.getRadius(), o.getWidthPx(),c);
 				
 				if (count == 0) {
 					p1[0] = o.getX();
@@ -130,8 +130,8 @@ public class Controller {
         return coords;
     }
 		
-	public static double getDistance(double objR, double pixelWidth) {
-		double dist = objR / Math.tan(Math.toRadians((75*pixelWidth)/320)/2);
+	public static double getDistance(double objR, double pixelWidth, Camera c) {
+		double dist = objR / Math.tan(Math.toRadians((c.getxFOV()*pixelWidth)/c.getxResolution())/2);
 		return dist;
 	}
 	
@@ -156,20 +156,48 @@ public class Controller {
 		long obj1x = Math.round((o1.getX() - pixelOriginX) * avgXPixelVal);
 		long obj1y = Math.round((o1.getY() - pixelOriginY) * avgYPixelVal);
 		
-		System.out.println(o1.getId());
-		System.out.println(o1.getCenterX());
-		System.out.println(obj1x);
-		
+//		System.out.println(o1.getId());
+//		System.out.println(o1.getCenterX());
+//		System.out.println(obj1x);
+//		
 		long obj2x = Math.round((o2.getX() - pixelOriginX) * avgXPixelVal);
 		long obj2y = Math.round((o2.getY() - pixelOriginY) * avgYPixelVal);
+//		
+//		double angle1 = Math.toDegrees(Math.atan((obj1y - obj2y)/(obj1x - obj2x)));
+//		double angle2 = Math.toDegrees(Math.atan((o1.getCenterY() - o2.getCenterY())/(o1.getCenterX() - o2.getCenterX())));
+//		
+//		double diff = Math.abs(angle1) - Math.abs(angle2);
+//		
+//		System.out.println("x1: "+o1.getX());
+//		System.out.println("y1: "+o1.getY());
+//		System.out.println("x2: "+obj1x);
+//		System.out.println("y2: "+obj1y);
+//		
+//		System.out.println("x1: "+o1.getCenterX());
+//		System.out.println("y1: "+o1.getCenterY());
+//		System.out.println("x2: "+obj1x);
+//		System.out.println("y2: "+obj1y);
 		
-		double angle1 = Math.toDegrees(Math.atan((obj1y - obj2y)/(obj1x - obj2x)));
-		double angle2 = Math.toDegrees(Math.atan((o1.getCenterY() - o2.getCenterY())/(o1.getCenterX() - o2.getCenterX())));
+		System.out.println("angles from obj1:");
+		System.out.println(Math.abs(angle2(Math.abs(o1.getCenterX()-resX/2),Math.abs(o1.getCenterY()-resY/2))));
+		System.out.println(Math.abs(angle2(Math.abs(obj1x-resX/2),Math.abs(obj1y - resY/2))));
+		double calcangle1 = Math.abs(angle2(Math.abs(o1.getCenterX()-resX/2),Math.abs(o1.getCenterY()-resY/2))) - 
+				Math.abs(angle2(Math.abs(obj1x-resX/2),Math.abs(obj1y - resY/2)));
+		System.out.println("Calculated angle 1: "+calcangle1);
 		
-		double diff = Math.abs(angle1) - Math.abs(angle2);
-		System.out.println("Calc angle1: "+angle1);
-		System.out.println("Calc angle2: "+angle2);
-		System.out.println("Calc angle3: "+diff);
+		System.out.println("angles from obj2:");
+		
+		System.out.println(Math.abs(angle2(Math.abs(o2.getCenterX()-resX/2),Math.abs(o2.getCenterY()-resY/2))));
+		System.out.println(Math.abs(angle2(Math.abs(obj2x-resX/2),Math.abs(obj2y - resY/2))));
+		double calcangle2 = Math.abs(angle2(Math.abs(o2.getCenterX()-resX/2),Math.abs(o2.getCenterY()-resY/2))) - 
+				Math.abs(angle2(Math.abs(obj2x-resX/2),Math.abs(obj2y - resY/2)));
+		System.out.println("Calculated angle2: "+calcangle2);
+		System.out.println("______________");
+		System.out.println("Estimated angle: "+(Math.abs(calcangle1) + Math.abs(calcangle2))/2 );
+	}
+	
+	public static double angle2(double x, double y) {
+		return Math.toDegrees(Math.atan(x/y));
 	}
 	
 	public static double angle(double x, double y) {

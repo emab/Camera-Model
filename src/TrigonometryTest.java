@@ -4,13 +4,16 @@ import java.util.List;
 public class TrigonometryTest {
 	public static void main(String[] args) {
 		
-		long x1 = -2;
-		long y1 = 1;
-		long x2 = 1;
-		long y2 = 1;
 		
-		long x2sq = x2 * x2;
-		long x2trig = x2sq;
+		double x1 = -1;
+		double y1 = 1;
+		double x2 = 1;
+		double y2 = 1;
+		
+		double error = 0.5;
+		
+		double x2sq = x2 * x2;
+		double x2trig = x2sq;
 		
 		if (y1 > 0) {
 			x2trig = (x2sq - 1) / 2;
@@ -21,15 +24,19 @@ public class TrigonometryTest {
 		
 		double[] solutions = solve(x2trig);
 		
+		System.out.println("Potential solutions...");
 		for (double x : solutions) {
 			System.out.println(x);
 		}
+		System.out.println("---------------------------------------------------------------------------------");
 		
-		long angle = checkSolutions(solutions,x1,y1,x2,y2);
+		System.out.println("Estimated solution...");
+		double angle = checkSolutions(solutions,x1,y1,x2,y2,error);
 		System.out.println(angle);
+		System.out.println("---------------------------------------------------------------------------------");
 	}
 	
-	static double[] solve(long x) {
+	static double[] solve(double x) {
 		double cosAns1 = Math.toDegrees(Math.acos(x));
 		double cosAns2 = 360 - cosAns1;
 		
@@ -42,18 +49,18 @@ public class TrigonometryTest {
 		return ans;
 	}
 	
-	static long checkSolutions(double[] solutions, long x, long y, long expectedX, long expectedY) {
+	static double checkSolutions(double[] solutions, double x, double y, double expectedX, double expectedY, double error) {
 		List<Double> angles = new ArrayList<Double>();
 		long angle = 404;
 		for (double ang : solutions) {
-			if (((x * Math.cos(Math.toRadians(ang))) - (y * Math.sin(Math.toRadians(ang))) <= expectedX + 0.0001)
-					&& (x * Math.cos(Math.toRadians(ang))) - (y * Math.sin(Math.toRadians(ang))) >= expectedX - 0.0001) {
+			if (((x * Math.cos(Math.toRadians(ang))) - (y * Math.sin(Math.toRadians(ang))) <= expectedX + error)
+					&& (x * Math.cos(Math.toRadians(ang))) - (y * Math.sin(Math.toRadians(ang))) >= expectedX - error) {
 				angles.add(ang);
 			}
 		}
 		for (double ang : angles) {
-			if (((y * Math.cos(Math.toRadians(ang))) + (x * Math.sin(Math.toRadians(ang))) <= expectedY + 0.0001)
-					&& (y * Math.cos(Math.toRadians(ang))) + (x * Math.sin(Math.toRadians(ang))) >= expectedY - 0.0001) {
+			if (((y * Math.cos(Math.toRadians(ang))) + (x * Math.sin(Math.toRadians(ang))) <= expectedY + error)
+					&& (y * Math.cos(Math.toRadians(ang))) + (x * Math.sin(Math.toRadians(ang))) >= expectedY - error) {
 				angle = Math.round(ang);
 			}
 		}
