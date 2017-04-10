@@ -7,9 +7,62 @@ public class Controller {
 		
 		List<Object> objects = new ArrayList<Object>();
 		
-		// Camera gives us its raw data
-
-		Camera c = new Camera(0,0,15,200);
+		
+//		for (int i=0; i<5; i++) {
+//			for (int j=0; j<5; j++) {
+//				for (int angle=0; angle <= 30; angle = angle + 10) {
+//					System.out.println("X: "+i+" Y: "+j+" Angle: "+angle);
+//					Camera c = new Camera(i,j,15,angle);
+//					
+//					objects = c.getProcessedObjects();
+//					
+//					int count = 0;
+//					
+//					double[] p1 = {0,0,0};
+//					double[] p2 = {0,0,0};
+//					double[] p3 = {0,0,0};
+//					double[] len = {0,0,0};
+//					
+//					// Iterate through object data from camera
+//
+//					for (Object o : objects) {
+//						if (count < 3) {
+//							len[count] = getDistance(o.getRadius(), o.getWidthPx(),c);
+//							
+//							if (count == 0) {
+//								p1[0] = o.getX();
+//								p1[1] = o.getY();
+//								p1[2] = 0;
+//								
+//							}
+//							if (count == 1) {
+//								p2[0] = o.getX();
+//								p2[1] = o.getY();
+//								p2[2] = 0;
+//								
+//							}
+//							if (count == 2) {
+//								p3[0] = o.getX();
+//								p3[1] = o.getY();
+//								p3[2] = 0;
+//
+//							}
+//						}
+//						count++;
+//					}
+//					
+//					long[] coords = trilaterate(p1,p2,p3,len);
+//					
+//					calcAngle(objects.get(0), objects.get(1), objects.get(2), c, coords);
+//					System.out.println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
+//				}
+//			}
+//		}
+		
+		
+		//Camera gives us its raw data
+		
+		Camera c = new Camera(4,4,15,10);
 
 		objects = c.getProcessedObjects();
 		
@@ -50,7 +103,7 @@ public class Controller {
 		
 		long[] coords = trilaterate(p1,p2,p3,len);
 		
-		calcAngle(objects.get(0), objects.get(1), c, coords);
+		calcAngle(objects.get(0), objects.get(1), objects.get(2), c, coords);
 		
 	}
 	
@@ -125,7 +178,7 @@ public class Controller {
         
         long[] coords = {ansX,ansY,ansZ};
 
-        System.out.println(ansX + " " + ansY + " " + ansZ);
+        System.out.println("Estimated camera coordinates: "+ansX + " " + ansY + " " + ansZ);
         
         return coords;
     }
@@ -135,7 +188,7 @@ public class Controller {
 		return dist;
 	}
 	
-	public static void calcAngle(Object o1, Object o2, Camera c, long[] coords) {
+	public static void calcAngle(Object o1, Object o2, Object o3, Camera c, long[] coords) {
 		long resX = c.getxResolution();
 		long resY = c.getyResolution();
 		double xFOV = c.getxFOV();
@@ -147,53 +200,62 @@ public class Controller {
 		double xMax = zCam * Math.tan(Math.toRadians(xFOV/2));
 		double yMax = zCam * Math.tan(Math.toRadians(yFOV/2));
 		
-		double pixelOriginX = xCam - xMax;
-		double pixelOriginY = yCam - yMax;
+		double pixelOriginX = -xMax;
+		double pixelOriginY = -yMax;
 		
 		double avgXPixelVal = resX/(2*xMax);
 		double avgYPixelVal = resY/(2*yMax);
 		
-		long obj1x = Math.round((o1.getX() - pixelOriginX) * avgXPixelVal);
-		long obj1y = Math.round((o1.getY() - pixelOriginY) * avgYPixelVal);
+		double obj1[] = translate(xCam, yCam, o1.getX(), o1.getY());
+		double obj2[] = translate(xCam, yCam, o2.getX(), o2.getY());
+		double obj3[] = translate(xCam, yCam, o3.getX(), o3.getY());
 		
-//		System.out.println(o1.getId());
-//		System.out.println(o1.getCenterX());
-//		System.out.println(obj1x);
-//		
-		long obj2x = Math.round((o2.getX() - pixelOriginX) * avgXPixelVal);
-		long obj2y = Math.round((o2.getY() - pixelOriginY) * avgYPixelVal);
-//		
-//		double angle1 = Math.toDegrees(Math.atan((obj1y - obj2y)/(obj1x - obj2x)));
-//		double angle2 = Math.toDegrees(Math.atan((o1.getCenterY() - o2.getCenterY())/(o1.getCenterX() - o2.getCenterX())));
-//		
-//		double diff = Math.abs(angle1) - Math.abs(angle2);
-//		
-//		System.out.println("x1: "+o1.getX());
-//		System.out.println("y1: "+o1.getY());
-//		System.out.println("x2: "+obj1x);
-//		System.out.println("y2: "+obj1y);
-//		
-//		System.out.println("x1: "+o1.getCenterX());
-//		System.out.println("y1: "+o1.getCenterY());
-//		System.out.println("x2: "+obj1x);
-//		System.out.println("y2: "+obj1y);
+		System.out.println("translated not rotated: "+obj1[0]+" "+ obj1[1]);
 		
-		System.out.println("angles from obj1:");
-		System.out.println(Math.abs(angle2(Math.abs(o1.getCenterX()-resX/2),Math.abs(o1.getCenterY()-resY/2))));
-		System.out.println(Math.abs(angle2(Math.abs(obj1x-resX/2),Math.abs(obj1y - resY/2))));
-		double calcangle1 = Math.abs(angle2(Math.abs(o1.getCenterX()-resX/2),Math.abs(o1.getCenterY()-resY/2))) - 
-				Math.abs(angle2(Math.abs(obj1x-resX/2),Math.abs(obj1y - resY/2)));
+		long obj1x = Math.round((obj1[0] - pixelOriginX) * avgXPixelVal);
+		long obj1y = Math.round((obj1[1] - pixelOriginY) * avgYPixelVal);
+		
+		System.out.println("x and y to pixels: "+obj1x+ " "+obj1y);
+		System.out.println("x and y rotated pixels: "+o1.getCenterX()+" "+o1.getCenterY());
+		
+		long obj2x = Math.round((obj2[0] - pixelOriginX) * avgXPixelVal);
+		long obj2y = Math.round((obj2[1] - pixelOriginY) * avgYPixelVal);
+		long obj3x = Math.round((obj3[0] - pixelOriginX) * avgXPixelVal);
+		long obj3y = Math.round((obj3[1] - pixelOriginY) * avgYPixelVal);
+		
+		
+		
+		double calcangle1 = Math.abs(angle(Math.abs(o1.getCenterX()-resX/2),Math.abs(o1.getCenterY()-resY/2))) - 
+				Math.abs(angle(Math.abs(obj1x-resX/2),Math.abs(obj1y - resY/2)));
 		System.out.println("Calculated angle 1: "+calcangle1);
 		
-		System.out.println("angles from obj2:");
-		
-		System.out.println(Math.abs(angle2(Math.abs(o2.getCenterX()-resX/2),Math.abs(o2.getCenterY()-resY/2))));
-		System.out.println(Math.abs(angle2(Math.abs(obj2x-resX/2),Math.abs(obj2y - resY/2))));
-		double calcangle2 = Math.abs(angle2(Math.abs(o2.getCenterX()-resX/2),Math.abs(o2.getCenterY()-resY/2))) - 
-				Math.abs(angle2(Math.abs(obj2x-resX/2),Math.abs(obj2y - resY/2)));
+		double calcangle2 = Math.abs(angle(Math.abs(o2.getCenterX()-resX/2),Math.abs(o2.getCenterY()-resY/2))) - 
+				Math.abs(angle(Math.abs(obj2x-resX/2),Math.abs(obj2y - resY/2)));
 		System.out.println("Calculated angle2: "+calcangle2);
+		
+		double calcangle3 = Math.abs(angle(Math.abs(o3.getCenterX()-resX/2),Math.abs(o3.getCenterY()-resY/2))) - 
+				Math.abs(angle(Math.abs(obj3x-resX/2),Math.abs(obj3y - resY/2)));
+		System.out.println("Calculated angle3: "+calcangle3);
+		
 		System.out.println("______________");
-		System.out.println("Estimated angle: "+(Math.abs(calcangle1) + Math.abs(calcangle2))/2 );
+		System.out.println("Estimated angle: "+(Math.abs(calcangle1) + Math.abs(calcangle2) + Math.abs(calcangle3))/3 );
+	}
+	
+	public static double[] translate(double xCam, double yCam, double x, double y) {
+		double adjX = 0;
+		double adjY = 0;
+		if ((xCam > 0 && yCam > 0) || (xCam > 0 && yCam < 0) || (xCam > 0 && yCam == 0) || (xCam == 0 && yCam > 0)) {
+			adjX = x - xCam;
+			adjY = y - yCam;
+		} else if ((xCam < 0 && yCam < 0) || (xCam == 0 && yCam < 0)){
+			adjX = x - xCam;
+			adjY = y + yCam;
+		} else if (xCam == 0 && yCam == 0) {
+			adjX = x;
+			adjY = y;
+		}
+		double[] translated = {adjX,adjY};
+		return translated;
 	}
 	
 	public static double angle2(double x, double y) {
@@ -201,31 +263,32 @@ public class Controller {
 	}
 	
 	public static double angle(double x, double y) {
-		if (x > 0 && y > 0) {
+		if (x > 160 && y > 100) {
 			return 360 - Math.toDegrees(Math.atan(x/y));
 		}
-		if (x > 0 && y < 0) {
+		else if (x > 160 && y < 100) {
 			return 180 - Math.toDegrees(Math.atan(x/y));
 		}
-		if (x < 0 && y > 0) {
+		else if (x < 160 && y > 100) {
 			return Math.abs(Math.toDegrees(Math.atan(x/y)));
 		}
-		if (x < 0 && y < 0) {
+		else if (x < 160 && y < 100) {
 			return 180 - Math.toDegrees(Math.atan(x/y));
 		}
-		if (x == 0 && y > 0) {
+		else if (x == 160 && y > 100) {
 			return 0;
 		}
-		if (x == 0 && y < 0) {
+		else if (x == 160 && y < 100) {
 			return 180;
 		}
-		if (y == 0 && x > 0) {
+		else if (y == 160 && x > 100) {
 			return 270;
 		}
-		if (y == 0 && x < 0) {
+		else if (y == 160 && x < 100) {
 			return 90;
 		}
 		else {
+			System.out.println("something broke");
 			return 0;
 		}
 	}
