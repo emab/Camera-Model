@@ -53,28 +53,9 @@ public class Camera {
 		double pixelOriginX = -xMax;
 		double pixelOriginY = -yMax;
 		
-		System.out.println("pixelOriginX: "+pixelOriginX);
-		System.out.println("pixelOriginY: "+pixelOriginY);
-		
-		// this rotates that coordinate according to the cameras rotation
-		double pixelOriginXrot = pixelOriginX * Math.cos(Math.toRadians(camTheta)) - pixelOriginY * Math.sin(Math.toRadians(camTheta));
-		double pixelOriginYrot = pixelOriginX * Math.sin(Math.toRadians(camTheta)) + pixelOriginY * Math.cos(Math.toRadians(camTheta));
-		
-		System.out.println("pixelOriginX rotated: "+pixelOriginXrot);
-		System.out.println("pixelOriginY rotated: "+pixelOriginYrot);
-		
 		// this works out the distance a pixel covers in a given direction
 		double avgXPixelVal = xResolution/(2*xMax);
 		double avgYPixelVal = yResolution/(2*yMax);
-		
-//		System.out.println("Avg x pixel value: "+avgXPixelVal);
-//		System.out.println("Avg y pixel value: "+avgYPixelVal);
-		
-		// the maximum x and y values an object can have for it to be in view
-		System.out.println("y maximum: ±"+yMax);
-		System.out.println("x maximum: ±"+xMax);
-//		
-//		System.out.println("______________________________________________________");
 		
 		for (String key : objects.keySet()) {
 			
@@ -98,19 +79,10 @@ public class Camera {
 				adjY = objY;
 			}
 			
-			System.out.println("Original X: "+objX);
-			System.out.println("Original Y: "+objY);
-			
-			System.out.println("Translated X: "+adjX);
-			System.out.println("Translated Y: "+adjY);
-			
 			// we then also need to rotate the objects coordinates to represent what the camera would see. This means they rotate in the opposite direction
 			double rotatedAdjX = adjX * Math.cos(Math.toRadians(-camTheta)) - adjY * Math.sin(Math.toRadians(-camTheta));
 			double rotatedAdjY = adjX * Math.sin(Math.toRadians(-camTheta)) + adjY * Math.cos(Math.toRadians(-camTheta));
 			
-
-			System.out.println("Rotated and translated X: "+rotatedAdjX);
-			System.out.println("Rotated and translated Y: "+rotatedAdjY);
 			
 			// this checks to see if the object would be in view of the camera in its rotated position
 			if (xMax > Math.abs(rotatedAdjX) && yMax > Math.abs(rotatedAdjY)) {
@@ -126,17 +98,7 @@ public class Camera {
 				
 				// converts the coordinate of object to be relative to the bottom corner of the camera view
 				long xCentre = Math.round((rotatedAdjX - pixelOriginX) * avgXPixelVal);
-				
 				long yCentre = Math.round((rotatedAdjY - pixelOriginY) * avgYPixelVal);
-				
-//				System.out.println("xpixel non rotated: "+xCentreNonRotated);
-//				System.out.println("ypixel non rotated: "+yCentreNonRotated);
-				
-//				long xCentre = Math.round(avgXPixelVal*(xCentreNonRotated * Math.cos(Math.toRadians(camTheta)) - yCentreNonRotated * Math.sin(Math.toRadians(camTheta))));
-//				long yCentre = Math.round(avgYPixelVal*(xCentreNonRotated * Math.sin(Math.toRadians(camTheta)) + yCentreNonRotated * Math.cos(Math.toRadians(camTheta))));
-				
-//				System.out.println("xpixel: "+xCentre);
-//				System.out.println("ypixel: "+yCentre);
 				
 				processedObjects.add(new Object(key, rotatedAdjX, rotatedAdjY, objR, distance, 
 						pixelWidth, xCentre, yCentre, objArc, objX, objY));

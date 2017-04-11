@@ -5,105 +5,71 @@ public class Controller {
 	
 	public static void main(String[] args) {
 		
-		List<Object> objects = new ArrayList<Object>();
+		List<Object> objects = new ArrayList<Object>();		
 		
+		//Initialise camera
+		int camX=0;
+		int camY=3;
+		int camZ=15;
+		int camTheta=90;
 		
-//		for (int i=0; i<5; i++) {
-//			for (int j=0; j<5; j++) {
-//				for (int angle=0; angle <= 30; angle = angle + 10) {
-//					System.out.println("X: "+i+" Y: "+j+" Angle: "+angle);
-//					Camera c = new Camera(i,j,15,angle);
-//					
-//					objects = c.getProcessedObjects();
-//					
-//					int count = 0;
-//					
-//					double[] p1 = {0,0,0};
-//					double[] p2 = {0,0,0};
-//					double[] p3 = {0,0,0};
-//					double[] len = {0,0,0};
-//					
-//					// Iterate through object data from camera
-//
-//					for (Object o : objects) {
-//						if (count < 3) {
-//							len[count] = getDistance(o.getRadius(), o.getWidthPx(),c);
-//							
-//							if (count == 0) {
-//								p1[0] = o.getX();
-//								p1[1] = o.getY();
-//								p1[2] = 0;
-//								
-//							}
-//							if (count == 1) {
-//								p2[0] = o.getX();
-//								p2[1] = o.getY();
-//								p2[2] = 0;
-//								
-//							}
-//							if (count == 2) {
-//								p3[0] = o.getX();
-//								p3[1] = o.getY();
-//								p3[2] = 0;
-//
-//							}
-//						}
-//						count++;
-//					}
-//					
-//					long[] coords = trilaterate(p1,p2,p3,len);
-//					
-//					calcAngle(objects.get(0), objects.get(1), objects.get(2), c, coords);
-//					System.out.println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
-//				}
-//			}
-//		}
+		System.out.println("          Starting with camera location X:"+camX+" Y:"+camY+" Z:"+camZ);
+		System.out.println("                 Angle of direction: "+camTheta);
+		System.out.println("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-");
 		
-		
-		//Camera gives us its raw data
-		
-		Camera c = new Camera(4,4,15,10);
+		Camera c = new Camera(camX,camY,camZ,camTheta);
 
+		// Camera processes the objects it can see
 		objects = c.getProcessedObjects();
 		
-		int count = 0;
-		
-		double[] p1 = {0,0,0};
-		double[] p2 = {0,0,0};
-		double[] p3 = {0,0,0};
-		double[] len = {0,0,0};
-		
-		// Iterate through object data from camera
+		// Check we have enough objects in order to do calculations on location
+		if (objects.size() < 3) {
+			System.out.println("Cannot see enough objects to find location...");
+		} else {
+			int count = 0;
+			
+			// Prepare variables to hold coordinates for each object.
+			double[] p1 = {0,0,0};
+			double[] p2 = {0,0,0};
+			double[] p3 = {0,0,0};
+			double[] len = {0,0,0};
+			
+			// Iterate through object data from camera
 
-		for (Object o : objects) {
-			if (count < 3) {
-				len[count] = getDistance(o.getRadius(), o.getWidthPx(),c);
-				
-				if (count == 0) {
-					p1[0] = o.getX();
-					p1[1] = o.getY();
-					p1[2] = 0;
+			for (Object o : objects) {
+				if (count < 3) {
+					//Distance to each object is calculated
+					len[count] = getDistance(o.getRadius(), o.getWidthPx(),c);
 					
-				}
-				if (count == 1) {
-					p2[0] = o.getX();
-					p2[1] = o.getY();
-					p2[2] = 0;
-					
-				}
-				if (count == 2) {
-					p3[0] = o.getX();
-					p3[1] = o.getY();
-					p3[2] = 0;
+					// Populate the arrays holding coordinate information. Assuming that the Z value for all objects is 0 
+					if (count == 0) {
+						p1[0] = o.getX();
+						p1[1] = o.getY();
+						p1[2] = 0;
+						
+					}
+					if (count == 1) {
+						p2[0] = o.getX();
+						p2[1] = o.getY();
+						p2[2] = 0;
+						
+					}
+					if (count == 2) {
+						p3[0] = o.getX();
+						p3[1] = o.getY();
+						p3[2] = 0;
 
+					}
 				}
+				count++;
 			}
-			count++;
+			
+			//Using the coords and the distances to each, we can calculate our current camera position
+			long[] coords = trilaterate(p1,p2,p3,len);
+			
+			//Using our current camera position and information from the camera, we can work out our angle from north
+			calcAngle(objects.get(0), objects.get(1), objects.get(2), c, coords);
 		}
-		
-		long[] coords = trilaterate(p1,p2,p3,len);
-		
-		calcAngle(objects.get(0), objects.get(1), objects.get(2), c, coords);
 		
 	}
 	
@@ -182,13 +148,27 @@ public class Controller {
         
         return coords;
     }
-		
+	
+	// This method calculates distance by assuming object is a sphere, so can use trigonometry to calculate the distance
 	public static double getDistance(double objR, double pixelWidth, Camera c) {
+		/* The angle to the object is calculated by taking the FOV of the camera and using a ratio of the object width in pixels
+		 * to the total image size in pixels to work out the objects arc. The arc/2 is therefore the angle needed to continue with
+		 * the distance calculation.
+		 */
 		double dist = objR / Math.tan(Math.toRadians((c.getxFOV()*pixelWidth)/c.getxResolution())/2);
 		return dist;
 	}
 	
+	/* This method calculates the angle the camera has been rotated by. This is done by comparing the
+	 * angles to each objects before and after their rotation. We know where objects should appear in the cameras
+	 * image, and also know where they have actually appeared. By taking an average we can get rid of some errors that
+	 * occur from estimating the objects central point on the screen.
+	 */
 	public static void calcAngle(Object o1, Object o2, Object o3, Camera c, long[] coords) {
+		
+		/*This is all information about the camera. In a real model this may have to be predetermined
+		 * but in this model it can take a camera of any resplution and FOV
+		 */
 		long resX = c.getxResolution();
 		long resY = c.getyResolution();
 		double xFOV = c.getxFOV();
@@ -197,6 +177,7 @@ public class Controller {
 		double yCam = coords[1];
 		double zCam = coords[2];
 		
+		// Below is very similar to how pixel coordinates are calculated in the Camera class
 		double xMax = zCam * Math.tan(Math.toRadians(xFOV/2));
 		double yMax = zCam * Math.tan(Math.toRadians(yFOV/2));
 		
@@ -210,37 +191,22 @@ public class Controller {
 		double obj2[] = translate(xCam, yCam, o2.getX(), o2.getY());
 		double obj3[] = translate(xCam, yCam, o3.getX(), o3.getY());
 		
-		System.out.println("translated not rotated: "+obj1[0]+" "+ obj1[1]);
-		
 		long obj1x = Math.round((obj1[0] - pixelOriginX) * avgXPixelVal);
 		long obj1y = Math.round((obj1[1] - pixelOriginY) * avgYPixelVal);
-		
-		System.out.println("x and y to pixels: "+obj1x+ " "+obj1y);
-		System.out.println("x and y rotated pixels: "+o1.getCenterX()+" "+o1.getCenterY());
-		
 		long obj2x = Math.round((obj2[0] - pixelOriginX) * avgXPixelVal);
 		long obj2y = Math.round((obj2[1] - pixelOriginY) * avgYPixelVal);
 		long obj3x = Math.round((obj3[0] - pixelOriginX) * avgXPixelVal);
 		long obj3y = Math.round((obj3[1] - pixelOriginY) * avgYPixelVal);
 		
+		double calcangle1 = calcAngle(obj1x,obj1y,o1.getCenterX(),o1.getCenterY(),c.getxResolution()/2,c.getyResolution()/2);
+		double calcangle2 = calcAngle(obj2x,obj2y,o2.getCenterX(),o2.getCenterY(),c.getxResolution()/2,c.getyResolution()/2);
+		double calcangle3 = calcAngle(obj3x,obj3y,o3.getCenterX(),o3.getCenterY(),c.getxResolution()/2,c.getyResolution()/2);
 		
-		
-		double calcangle1 = Math.abs(angle(Math.abs(o1.getCenterX()-resX/2),Math.abs(o1.getCenterY()-resY/2))) - 
-				Math.abs(angle(Math.abs(obj1x-resX/2),Math.abs(obj1y - resY/2)));
-		System.out.println("Calculated angle 1: "+calcangle1);
-		
-		double calcangle2 = Math.abs(angle(Math.abs(o2.getCenterX()-resX/2),Math.abs(o2.getCenterY()-resY/2))) - 
-				Math.abs(angle(Math.abs(obj2x-resX/2),Math.abs(obj2y - resY/2)));
-		System.out.println("Calculated angle2: "+calcangle2);
-		
-		double calcangle3 = Math.abs(angle(Math.abs(o3.getCenterX()-resX/2),Math.abs(o3.getCenterY()-resY/2))) - 
-				Math.abs(angle(Math.abs(obj3x-resX/2),Math.abs(obj3y - resY/2)));
-		System.out.println("Calculated angle3: "+calcangle3);
-		
-		System.out.println("______________");
+		System.out.println("__________________________________________________________");
 		System.out.println("Estimated angle: "+(Math.abs(calcangle1) + Math.abs(calcangle2) + Math.abs(calcangle3))/3 );
 	}
 	
+	// Method same as Camera class, used to translate points
 	public static double[] translate(double xCam, double yCam, double x, double y) {
 		double adjX = 0;
 		double adjY = 0;
@@ -258,34 +224,45 @@ public class Controller {
 		return translated;
 	}
 	
-	public static double angle2(double x, double y) {
-		return Math.toDegrees(Math.atan(x/y));
+	// This method calculates the change in angle between two given points
+	static double calcAngle(double initial_x, double initial_y, double new_x, double new_y, double camX, double camY) {
+		// First calculate the angle to the initial point going counter clockwise (matching camera)
+		double intial_angle = angle(initial_x, initial_y,camX,camY);
+		//Then we calculate the angle to the other object
+		double rotated_angle = angle(new_x, new_y,camX,camY);
+		
+		//If the rotated angle appears to be less than the original angle, we need to fix the calculation by adding 360
+		if (rotated_angle < intial_angle) {
+			rotated_angle = 360 + rotated_angle;
+		}
+		return Math.abs(rotated_angle - intial_angle);
 	}
 	
-	public static double angle(double x, double y) {
-		if (x > 160 && y > 100) {
-			return 360 - Math.toDegrees(Math.atan(x/y));
+	// Used to return an angle that is correct for points in the different quadrants of the image
+	public static double angle(double x, double y, double camX, double camY) {
+		if (x > camX && y > camY) {
+			return Math.toDegrees(Math.atan((x-camX)/(y-camY)));
 		}
-		else if (x > 160 && y < 100) {
-			return 180 - Math.toDegrees(Math.atan(x/y));
+		else if (x > camX && y < camY) {
+			return 90 + Math.toDegrees(Math.atan((camY-y)/(x-camX)));
 		}
-		else if (x < 160 && y > 100) {
-			return Math.abs(Math.toDegrees(Math.atan(x/y)));
+		else if (x < camX && y > camY) {
+			return 270 + Math.abs(Math.toDegrees(Math.atan((camY-y)/(camX-x))));
 		}
-		else if (x < 160 && y < 100) {
-			return 180 - Math.toDegrees(Math.atan(x/y));
+		else if (x < camX && y < camY) {
+			return 180 + Math.toDegrees(Math.atan((camX-x)/(camY-y)));
 		}
-		else if (x == 160 && y > 100) {
+		else if (x == camX && y > camY) {
 			return 0;
 		}
-		else if (x == 160 && y < 100) {
+		else if (x == camX && y < camY) {
 			return 180;
 		}
-		else if (y == 160 && x > 100) {
-			return 270;
-		}
-		else if (y == 160 && x < 100) {
+		else if (y == camY && x > camX) {
 			return 90;
+		}
+		else if (y == camY && x < camX) {
+			return 270;
 		}
 		else {
 			System.out.println("something broke");
