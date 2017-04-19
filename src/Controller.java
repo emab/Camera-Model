@@ -10,8 +10,8 @@ public class Controller {
 		//Initialise camera
 		int camX=0;
 		int camY=3;
-		int camZ=15;
-		int camTheta=90;
+		int camZ=13;
+		int camTheta=250;
 		
 		System.out.println("          Starting with camera location X:"+camX+" Y:"+camY+" Z:"+camZ);
 		System.out.println("                 Angle of direction: "+camTheta);
