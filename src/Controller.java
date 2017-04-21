@@ -5,13 +5,14 @@ public class Controller {
 	
 	public static void main(String[] args) {
 		
-		List<Object> objects = new ArrayList<Object>();		
+		List<Object> objects = new ArrayList<Object>();	
 		
 		//Initialise camera
-		int camX=0;
-		int camY=3;
-		int camZ=15;
-		int camTheta=90;
+		double camX= -10;
+		double camY= 1;
+		double camZ= 25;
+		double camTheta = 0;
+		
 		
 		System.out.println("          Starting with camera location X:"+camX+" Y:"+camY+" Z:"+camZ);
 		System.out.println("                 Angle of direction: "+camTheta);
@@ -65,7 +66,7 @@ public class Controller {
 			}
 			
 			//Using the coords and the distances to each, we can calculate our current camera position
-			long[] coords = trilaterate(p1,p2,p3,len);
+			double[] coords = trilaterate(p1,p2,p3,len);
 			
 			//Using our current camera position and information from the camera, we can work out our angle from north
 			calcAngle(objects.get(0), objects.get(1), objects.get(2), c, coords);
@@ -74,7 +75,7 @@ public class Controller {
 	}
 	
 	// Inspiration from https://www.experts-exchange.com/questions/21253179/triangulation.html
-	public static long[] trilaterate(double[] P1, double[] P2, double[] P3, double[] L)
+	public static double[] trilaterate(double[] P1, double[] P2, double[] P3, double[] L)
     {
 		//define station points and distances
         double x1 = P1[0];
@@ -137,14 +138,10 @@ public class Controller {
         double x = (x1 + X * Xx + Y * Yx + Z * Zx);
         double y = (y1 + X * Xy + Y * Yy + Z * Zy);
         double z = (z1 + X * Xz + Y * Yz + Z * Zz);
-
-        long ansX = Math.round(x);
-        long ansY = Math.round(y);
-        long ansZ = Math.abs(Math.round(z));
         
-        long[] coords = {ansX,ansY,ansZ};
+        double[] coords = {x,y,z};
 
-        System.out.println("Estimated camera coordinates: "+ansX + " " + ansY + " " + ansZ);
+        System.out.println("Estimated camera coordinates: "+ x + " " + y + " " + z);
         
         return coords;
     }
@@ -164,10 +161,10 @@ public class Controller {
 	 * image, and also know where they have actually appeared. By taking an average we can get rid of some errors that
 	 * occur from estimating the objects central point on the screen.
 	 */
-	public static void calcAngle(Object o1, Object o2, Object o3, Camera c, long[] coords) {
+	public static void calcAngle(Object o1, Object o2, Object o3, Camera c, double[] coords) {
 		
 		/*This is all information about the camera. In a real model this may have to be predetermined
-		 * but in this model it can take a camera of any resplution and FOV
+		 * but in this model it can take a camera of any resolution and FOV
 		 */
 		long resX = c.getxResolution();
 		long resY = c.getyResolution();
@@ -180,6 +177,7 @@ public class Controller {
 		// Below is very similar to how pixel coordinates are calculated in the Camera class
 		double xMax = zCam * Math.tan(Math.toRadians(xFOV/2));
 		double yMax = zCam * Math.tan(Math.toRadians(yFOV/2));
+
 		
 		double pixelOriginX = -xMax;
 		double pixelOriginY = -yMax;
@@ -210,11 +208,17 @@ public class Controller {
 	public static double[] translate(double xCam, double yCam, double x, double y) {
 		double adjX = 0;
 		double adjY = 0;
+		xCam = Math.round(xCam);
+		yCam = Math.round(yCam);
+		
 		if ((xCam > 0 && yCam > 0) || (xCam > 0 && yCam < 0) || (xCam > 0 && yCam == 0) || (xCam == 0 && yCam > 0)) {
 			adjX = x - xCam;
 			adjY = y - yCam;
 		} else if ((xCam < 0 && yCam < 0) || (xCam == 0 && yCam < 0)){
 			adjX = x - xCam;
+			adjY = y + yCam;
+		} else if (xCam < 0 && yCam >= 0) {
+			adjX = x + xCam;
 			adjY = y + yCam;
 		} else if (xCam == 0 && yCam == 0) {
 			adjX = x;

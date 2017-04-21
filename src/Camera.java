@@ -74,6 +74,9 @@ public class Camera {
 			} else if ((camX < 0 && camY < 0) || (camX == 0 && camY < 0)){
 				adjX = objX - camX;
 				adjY = objY + camY;
+			} else if (camX < 0 && camY >= 0) {
+				adjX = objX + camX;
+				adjY = objY + camY;
 			} else if (camX == 0 && camY == 0) {
 				adjX = objX;
 				adjY = objY;
