@@ -17,8 +17,8 @@ public class Camera {
 	// Details about camera which affect some of the calculations
 	final private double xFOV = 75;
 	final private double yFOV = 47;
-	final private long xResolution = 320;
-	final private long yResolution = 200;
+	final private long xResolution = 640;
+	final private long yResolution = 400;
 	
 	private List<Object> processedObjects = new ArrayList<Object>();
 	
@@ -45,7 +45,7 @@ public class Camera {
 			objects.put(key, data);
 		}
 		
-		// need to work out max and min values for potential objects at a given height X
+		// need to work out max and min values for potential objects at a given height camZ
 		double xMax = camZ * Math.tan(Math.toRadians(xFOV/2));
 		double yMax = camZ * Math.tan(Math.toRadians(yFOV/2));
 		
