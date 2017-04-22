@@ -8,10 +8,10 @@ public class Controller {
 		List<Object> objects = new ArrayList<Object>();	
 		
 		//Initialise camera
-		double camX= -10;
-		double camY= 1;
-		double camZ= 25;
-		double camTheta = 0;
+		double camX= 5;
+		double camY= 5;
+		double camZ= 30;
+		double camTheta = 25;
 		
 		
 		System.out.println("          Starting with camera location X:"+camX+" Y:"+camY+" Z:"+camZ);
@@ -196,9 +196,9 @@ public class Controller {
 		long obj3x = Math.round((obj3[0] - pixelOriginX) * avgXPixelVal);
 		long obj3y = Math.round((obj3[1] - pixelOriginY) * avgYPixelVal);
 		
-		double calcangle1 = calcAngle(obj1x,obj1y,o1.getCenterX(),o1.getCenterY(),c.getxResolution()/2,c.getyResolution()/2);
-		double calcangle2 = calcAngle(obj2x,obj2y,o2.getCenterX(),o2.getCenterY(),c.getxResolution()/2,c.getyResolution()/2);
-		double calcangle3 = calcAngle(obj3x,obj3y,o3.getCenterX(),o3.getCenterY(),c.getxResolution()/2,c.getyResolution()/2);
+		double calcangle1 = angleChange(obj1x,obj1y,o1.getCenterX(),o1.getCenterY(),resX/2, resY/2);
+		double calcangle2 = angleChange(obj2x,obj2y,o2.getCenterX(),o2.getCenterY(),resX/2, resY/2);
+		double calcangle3 = angleChange(obj3x,obj3y,o3.getCenterX(),o3.getCenterY(),resX/2, resY/2);
 		
 		System.out.println("__________________________________________________________");
 		System.out.println("Estimated angle: "+(Math.abs(calcangle1) + Math.abs(calcangle2) + Math.abs(calcangle3))/3 );
@@ -208,8 +208,6 @@ public class Controller {
 	public static double[] translate(double xCam, double yCam, double x, double y) {
 		double adjX = 0;
 		double adjY = 0;
-		xCam = Math.round(xCam);
-		yCam = Math.round(yCam);
 		
 		if ((xCam > 0 && yCam > 0) || (xCam > 0 && yCam < 0) || (xCam > 0 && yCam == 0) || (xCam == 0 && yCam > 0)) {
 			adjX = x - xCam;
@@ -229,7 +227,7 @@ public class Controller {
 	}
 	
 	// This method calculates the change in angle between two given points
-	static double calcAngle(double initial_x, double initial_y, double new_x, double new_y, double camX, double camY) {
+	static double angleChange(double initial_x, double initial_y, double new_x, double new_y, double camX, double camY) {
 		// First calculate the angle to the initial point going counter clockwise (matching camera)
 		double intial_angle = angle(initial_x, initial_y,camX,camY);
 		//Then we calculate the angle to the other object
