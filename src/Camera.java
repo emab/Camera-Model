@@ -49,6 +49,8 @@ public class Camera {
 		double xMax = camZ * Math.tan(Math.toRadians(xFOV/2));
 		double yMax = camZ * Math.tan(Math.toRadians(yFOV/2));
 		
+		System.out.println(xMax);
+		
 		// this works out the coordinate of the bottom left corner of the camera viewpoint
 		double pixelOriginX = -xMax;
 		double pixelOriginY = -yMax;
@@ -85,6 +87,10 @@ public class Camera {
 			// we then also need to rotate the objects coordinates to represent what the camera would see. This means they rotate in the opposite direction
 			double rotatedAdjX = adjX * Math.cos(Math.toRadians(-camTheta)) - adjY * Math.sin(Math.toRadians(-camTheta));
 			double rotatedAdjY = adjX * Math.sin(Math.toRadians(-camTheta)) + adjY * Math.cos(Math.toRadians(-camTheta));
+			
+			System.out.println(key);
+			System.out.println(rotatedAdjX);
+			System.out.println(rotatedAdjY);
 			
 			
 			// this checks to see if the object would be in view of the camera in its rotated position

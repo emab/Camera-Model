@@ -8,11 +8,13 @@ public class Controller {
 		List<Object> objects = new ArrayList<Object>();	
 		
 		//Initialise camera
+
 		double camX= 5;
 		double camY= 5;
-		double camZ= 30;
+		double camZ= 10;
 		double camTheta = 25;
 		
+
 		
 		System.out.println("          Starting with camera location X:"+camX+" Y:"+camY+" Z:"+camZ);
 		System.out.println("                 Angle of direction: "+camTheta);
