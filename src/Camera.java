@@ -105,6 +105,7 @@ public class Camera {
 				// calculates the arc the object would take up in the view of camera (assuming it was a sphere)
 				double objArc = 2 * Math.toDegrees((Math.atan( objR / distance )));	
 				// calculates the width in pixels of the object
+<<<<<<< HEAD
 				double pixelWidth = roundUp((objArc/xFOV) * xResolution);
 				
 				// converts the coordinate of object to be relative to the bottom corner of the camera view
@@ -112,6 +113,12 @@ public class Camera {
 				long yCentre = roundUp((rotatedAdjY - pixelOriginY) * avgYPixelVal);
 				
 				System.out.printf("PIXEL WIDTH WITH OBJECT X VAL: %s  IS:  %s\n",objX,pixelWidth);
+=======
+				double pixelWidth = (objArc/xFOV) * xResolution;
+				// converts the coordinate of object to be relative to the bottom corner of the camera view
+				long xCentre = Math.round((rotatedAdjX - pixelOriginX) * avgXPixelVal);
+				long yCentre = Math.round((rotatedAdjY - pixelOriginY) * avgYPixelVal);
+>>>>>>> origin/master
 				processedObjects.add(new Object(key, rotatedAdjX, rotatedAdjY, objR, distance, 
 						pixelWidth, xCentre, yCentre, objArc, objX, objY));
 				

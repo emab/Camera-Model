@@ -8,11 +8,25 @@ public class Controller {
 		List<Object> objects = new ArrayList<Object>();	
 		
 		//Initialise camera
+<<<<<<< HEAD
+		double camX= 0;
+		double camY= 0;
+		double camZ= 17;
+		double camTheta = 70;
+=======
 
+<<<<<<< HEAD
 		double camX= -1;
 		double camY= 1.5;
 		double camZ= 5;
 		double camTheta = 300;
+=======
+		double camX= 5;
+		double camY= 5;
+		double camZ= 10;
+		double camTheta = 25;
+>>>>>>> origin/master
+>>>>>>> origin/master
 		
 
 		
@@ -202,14 +216,19 @@ public class Controller {
 		long obj3x = Math.round((obj3[0] - pixelOriginX) * avgXPixelVal);
 		long obj3y = Math.round((obj3[1] - pixelOriginY) * avgYPixelVal);
 		
+		
 		double calcangle1 = angleChange(obj1x,obj1y,o1.getCenterX(),o1.getCenterY(),resX/2, resY/2);
 		double calcangle2 = angleChange(obj2x,obj2y,o2.getCenterX(),o2.getCenterY(),resX/2, resY/2);
 		double calcangle3 = angleChange(obj3x,obj3y,o3.getCenterX(),o3.getCenterY(),resX/2, resY/2);
 		
+<<<<<<< HEAD
 		System.out.printf("obj translated: %s %s obj pixel non rotated: %s %s rotated: %s %s calculated angle: %s\n",obj1[0],obj1[1],obj1x,obj1y,o1.getCenterX(),o1.getCenterY(),calcangle1);
 		System.out.printf("obj translated: %s %s obj pixel non rotated: %s %s rotated: %s %s calculated angle: %s\n",obj2[0],obj2[1],obj2x,obj2y,o2.getCenterX(),o2.getCenterY(),calcangle2);
 		System.out.printf("obj translated: %s %s obj pixel non rotated: %s %s rotated: %s %s calculated angle: %s\n",obj3[0],obj3[1],obj3x,obj3y,o3.getCenterX(),o3.getCenterY(),calcangle3);
 		
+=======
+		System.out.printf("Calculated angles: %s    %s    %s",calcangle1,calcangle2,calcangle3);
+>>>>>>> origin/master
 		System.out.println("__________________________________________________________");
 		System.out.println("Estimated angle: "+((calcangle1) + (calcangle2) + (calcangle3))/3 );
 	}
@@ -239,11 +258,12 @@ public class Controller {
 	// This method calculates the change in angle between two given points
 	static double angleChange(double initial_x, double initial_y, double new_x, double new_y, double camX, double camY) {
 		// First calculate the angle to the initial point going counter clockwise (matching camera)
-		double intial_angle = angle(initial_x, initial_y,camX,camY);
+		double initial_angle = angle(initial_x, initial_y,camX,camY);
 		//Then we calculate the angle to the other object
 		double rotated_angle = angle(new_x, new_y,camX,camY);
-		
+		System.out.printf("\nINITIAL: %s   ROTATED: %s\n",initial_angle,rotated_angle);
 		//If the rotated angle appears to be less than the original angle, we need to fix the calculation by adding 360
+<<<<<<< HEAD
 //		if (rotated_angle < intial_angle) {
 //			rotated_angle = 360 + rotated_angle;
 //		}
@@ -254,6 +274,12 @@ public class Controller {
 			return rotated_angle - intial_angle + 360;
 		}
 		return rotated_angle - intial_angle;
+=======
+		if (rotated_angle < initial_angle) {
+			rotated_angle = 360 + rotated_angle;
+		}
+		return Math.abs(rotated_angle - initial_angle);
+>>>>>>> origin/master
 	}
 	
 	// Used to return an angle that is correct for points in the different quadrants of the image
