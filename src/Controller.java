@@ -9,10 +9,10 @@ public class Controller {
 		
 		//Initialise camera
 
-		double camX= 5;
-		double camY= 5;
-		double camZ= 10;
-		double camTheta = 25;
+		double camX= -1;
+		double camY= 1.5;
+		double camZ= 5;
+		double camTheta = 300;
 		
 
 		
@@ -95,7 +95,7 @@ public class Controller {
         double L1 = L[0];
         double L2 = L[1];
         double L3 = L[2];
-
+        
         //caluculate coords in plane of stations
         double LB1 = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1) + (z2 - z1) * (z2 - z1));
         double LB2 = Math.sqrt((x3 - x2) * (x3 - x2) + (y3 - y2) * (y3 - y2) + (z3 - z2) * (z3 - z2));
@@ -112,7 +112,8 @@ public class Controller {
         double Y = (D1*D1 - L3*L3  + CB*CB  )/(2*CB );
         if (C1*C1 - Y*Y < 0){System.out.println("no solution4");}
         double Z = Math.sqrt(C1 * C1 - Y * Y);
-
+        
+        
        	//Now transform X,Y,Z to x,y,z
         //Find the unit vectors in X,Y,Z
         double Xx = (x2-x1);
@@ -139,10 +140,10 @@ public class Controller {
 
         double x = (x1 + X * Xx + Y * Yx + Z * Zx);
         double y = (y1 + X * Xy + Y * Yy + Z * Zy);
-        double z = (z1 + X * Xz + Y * Yz + Z * Zz);
+        double z = Math.abs(z1 + X * Xz + Y * Yz + Z * Zz);
         
         double[] coords = {x,y,z};
-
+        
         System.out.println("Estimated camera coordinates: "+ x + " " + y + " " + z);
         
         return coords;
@@ -164,6 +165,9 @@ public class Controller {
 	 * occur from estimating the objects central point on the screen.
 	 */
 	public static void calcAngle(Object o1, Object o2, Object o3, Camera c, double[] coords) {
+		
+		System.out.println("using objects: " + o1.getId() +o2.getId() +o3.getId());
+		
 		
 		/*This is all information about the camera. In a real model this may have to be predetermined
 		 * but in this model it can take a camera of any resolution and FOV
@@ -202,8 +206,12 @@ public class Controller {
 		double calcangle2 = angleChange(obj2x,obj2y,o2.getCenterX(),o2.getCenterY(),resX/2, resY/2);
 		double calcangle3 = angleChange(obj3x,obj3y,o3.getCenterX(),o3.getCenterY(),resX/2, resY/2);
 		
+		System.out.printf("obj translated: %s %s obj pixel non rotated: %s %s rotated: %s %s calculated angle: %s\n",obj1[0],obj1[1],obj1x,obj1y,o1.getCenterX(),o1.getCenterY(),calcangle1);
+		System.out.printf("obj translated: %s %s obj pixel non rotated: %s %s rotated: %s %s calculated angle: %s\n",obj2[0],obj2[1],obj2x,obj2y,o2.getCenterX(),o2.getCenterY(),calcangle2);
+		System.out.printf("obj translated: %s %s obj pixel non rotated: %s %s rotated: %s %s calculated angle: %s\n",obj3[0],obj3[1],obj3x,obj3y,o3.getCenterX(),o3.getCenterY(),calcangle3);
+		
 		System.out.println("__________________________________________________________");
-		System.out.println("Estimated angle: "+(Math.abs(calcangle1) + Math.abs(calcangle2) + Math.abs(calcangle3))/3 );
+		System.out.println("Estimated angle: "+((calcangle1) + (calcangle2) + (calcangle3))/3 );
 	}
 	
 	// Method same as Camera class, used to translate points
@@ -236,10 +244,16 @@ public class Controller {
 		double rotated_angle = angle(new_x, new_y,camX,camY);
 		
 		//If the rotated angle appears to be less than the original angle, we need to fix the calculation by adding 360
-		if (rotated_angle < intial_angle) {
-			rotated_angle = 360 + rotated_angle;
+//		if (rotated_angle < intial_angle) {
+//			rotated_angle = 360 + rotated_angle;
+//		}
+		if (rotated_angle - intial_angle > 180) {
+			return rotated_angle - intial_angle - 360;
 		}
-		return Math.abs(rotated_angle - intial_angle);
+		if (rotated_angle - intial_angle < -180) {
+			return rotated_angle - intial_angle + 360;
+		}
+		return rotated_angle - intial_angle;
 	}
 	
 	// Used to return an angle that is correct for points in the different quadrants of the image

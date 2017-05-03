@@ -49,7 +49,9 @@ public class Camera {
 		double xMax = camZ * Math.tan(Math.toRadians(xFOV/2));
 		double yMax = camZ * Math.tan(Math.toRadians(yFOV/2));
 		
+		
 		System.out.println(xMax);
+		System.out.println(yMax);
 		
 		// this works out the coordinate of the bottom left corner of the camera viewpoint
 		double pixelOriginX = -xMax;
@@ -103,12 +105,13 @@ public class Camera {
 				// calculates the arc the object would take up in the view of camera (assuming it was a sphere)
 				double objArc = 2 * Math.toDegrees((Math.atan( objR / distance )));	
 				// calculates the width in pixels of the object
-				double pixelWidth = (objArc/xFOV) * xResolution;
+				double pixelWidth = roundUp((objArc/xFOV) * xResolution);
 				
 				// converts the coordinate of object to be relative to the bottom corner of the camera view
-				long xCentre = Math.round((rotatedAdjX - pixelOriginX) * avgXPixelVal);
-				long yCentre = Math.round((rotatedAdjY - pixelOriginY) * avgYPixelVal);
+				long xCentre = roundUp((rotatedAdjX - pixelOriginX) * avgXPixelVal);
+				long yCentre = roundUp((rotatedAdjY - pixelOriginY) * avgYPixelVal);
 				
+				System.out.printf("PIXEL WIDTH WITH OBJECT X VAL: %s  IS:  %s\n",objX,pixelWidth);
 				processedObjects.add(new Object(key, rotatedAdjX, rotatedAdjY, objR, distance, 
 						pixelWidth, xCentre, yCentre, objArc, objX, objY));
 				
@@ -117,6 +120,10 @@ public class Camera {
 			}
 			System.out.println("__________________________________________________________");
 		}
+	}
+	
+	private int roundUp(double x) {
+		return (int) Math.floor(x) + 1;
 	}
 	
 	// getters
