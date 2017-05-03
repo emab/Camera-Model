@@ -98,11 +98,9 @@ public class Camera {
 				double objArc = 2 * Math.toDegrees((Math.atan( objR / distance )));	
 				// calculates the width in pixels of the object
 				double pixelWidth = (objArc/xFOV) * xResolution;
-				
 				// converts the coordinate of object to be relative to the bottom corner of the camera view
 				long xCentre = Math.round((rotatedAdjX - pixelOriginX) * avgXPixelVal);
 				long yCentre = Math.round((rotatedAdjY - pixelOriginY) * avgYPixelVal);
-				
 				processedObjects.add(new Object(key, rotatedAdjX, rotatedAdjY, objR, distance, 
 						pixelWidth, xCentre, yCentre, objArc, objX, objY));
 				

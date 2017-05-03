@@ -8,10 +8,10 @@ public class Controller {
 		List<Object> objects = new ArrayList<Object>();	
 		
 		//Initialise camera
-		double camX= 5;
-		double camY= 5;
-		double camZ= 30;
-		double camTheta = 25;
+		double camX= 0;
+		double camY= 0;
+		double camZ= 17;
+		double camTheta = 70;
 		
 		
 		System.out.println("          Starting with camera location X:"+camX+" Y:"+camY+" Z:"+camZ);
@@ -196,10 +196,12 @@ public class Controller {
 		long obj3x = Math.round((obj3[0] - pixelOriginX) * avgXPixelVal);
 		long obj3y = Math.round((obj3[1] - pixelOriginY) * avgYPixelVal);
 		
+		
 		double calcangle1 = angleChange(obj1x,obj1y,o1.getCenterX(),o1.getCenterY(),resX/2, resY/2);
 		double calcangle2 = angleChange(obj2x,obj2y,o2.getCenterX(),o2.getCenterY(),resX/2, resY/2);
 		double calcangle3 = angleChange(obj3x,obj3y,o3.getCenterX(),o3.getCenterY(),resX/2, resY/2);
 		
+		System.out.printf("Calculated angles: %s    %s    %s",calcangle1,calcangle2,calcangle3);
 		System.out.println("__________________________________________________________");
 		System.out.println("Estimated angle: "+(Math.abs(calcangle1) + Math.abs(calcangle2) + Math.abs(calcangle3))/3 );
 	}
@@ -229,15 +231,15 @@ public class Controller {
 	// This method calculates the change in angle between two given points
 	static double angleChange(double initial_x, double initial_y, double new_x, double new_y, double camX, double camY) {
 		// First calculate the angle to the initial point going counter clockwise (matching camera)
-		double intial_angle = angle(initial_x, initial_y,camX,camY);
+		double initial_angle = angle(initial_x, initial_y,camX,camY);
 		//Then we calculate the angle to the other object
 		double rotated_angle = angle(new_x, new_y,camX,camY);
-		
+		System.out.printf("\nINITIAL: %s   ROTATED: %s\n",initial_angle,rotated_angle);
 		//If the rotated angle appears to be less than the original angle, we need to fix the calculation by adding 360
-		if (rotated_angle < intial_angle) {
+		if (rotated_angle < initial_angle) {
 			rotated_angle = 360 + rotated_angle;
 		}
-		return Math.abs(rotated_angle - intial_angle);
+		return Math.abs(rotated_angle - initial_angle);
 	}
 	
 	// Used to return an angle that is correct for points in the different quadrants of the image
